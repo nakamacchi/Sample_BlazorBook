@@ -32,7 +32,7 @@ else
             <PropertyColumn Property="@(a => a.Phone)" Title="電話番号" />
             <PropertyColumn Property="@(a => a.State)" Title="州" />
             <TemplateColumn Title="契約有無">
-                <input type="checkbox" disabled value="@(context.Contract)" />
+                <input type="checkbox" disabled checked="@(context.Contract)" />
                 @(context.Contract ? "契約あり" : "契約なし")
             </TemplateColumn>
         </QuickGrid>
@@ -47,8 +47,9 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        await using var pubs = DbFactory.CreateDbContext();
-        authors = (await pubs.Authors.ToListAsync()).AsQueryable();
+        await using (var pubs = await DbFactory.CreateDbContextAsync()){
+            authors = (await pubs.Authors.ToListAsync()).AsQueryable();
+    	}
     }
 
     private void OnSelectButtonClicked(Author selectedAuthor)

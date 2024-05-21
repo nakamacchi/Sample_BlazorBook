@@ -18,7 +18,7 @@
         <PropertyColumn Property="@(a => a.Phone)" Title="電話番号" />
         <PropertyColumn Property="@(a => a.State)" Title="州" />
         <TemplateColumn Title="契約有無">
-            <input type="checkbox" disabled value="@(context.Contract)" />
+            <input type="checkbox" disabled checked="@(context.Contract)" />
             @(context.Contract ? "契約あり" : "契約なし")
         </TemplateColumn>
     </QuickGrid>
@@ -28,7 +28,9 @@
 <p>@LogMessage</p>
 
 @code {
+    // データを取得する為に画面から呼び出されるデリゲートメソッドを格納するプロパティ
     private GridItemsProvider<Author>? ItemsProvider { get; set; }
+    // デバッグ用メッセージ
     private string? LogMessage { get; set; }
 
     protected override void OnInitialized()
@@ -39,13 +41,16 @@
             // typeof(request) = GridItemsProviderRequest<Author>
             // StartIndex, Count, SortByColumn, SortByAscending 情報が含まれている
 
+            // ここはデバッグ用のコード
             LogMessage += "(" + request.StartIndex + " " + request.Count + ") ";
             StateHasChanged();
 
-            await using var pubs = DbFactory.CreateDbContext();
-            var data = await pubs.Authors.Skip(request.StartIndex).Take(request.Count ?? 0).ToListAsync();
-            var totalCount = await pubs.Authors.CountAsync();
-            return GridItemsProviderResult.From(data, totalCount);
+            // 指定された位置のデータを指定行だけ取得して返す
+            await using (var pubs = await DbFactory.CreateDbContextAsync()){
+                var data = await pubs.Authors.Skip(request.StartIndex).Take(request.Count ?? 0).ToListAsync();
+                var totalCount = await pubs.Authors.CountAsync();
+                return GridItemsProviderResult.From(data, totalCount);
+            }
         };
     }
 }

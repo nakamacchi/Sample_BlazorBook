@@ -14,7 +14,7 @@
 <h5>著者データを修正してください。</h5>
 
 <EditForm Model="@vm" OnValidSubmit="@OnEditFormSubmitted">
-    <fieldset disabled="@isFormDisabled">
+    <fieldset disabled="@isProcessing">
         <DataAnnotationsValidator />
 
         <dl>
@@ -32,11 +32,10 @@
         </dl>
 
         <button type="submit">更新</button>
-        <button type="button" @onclick="OnCancelButtonClicked">キャンセル</button>
-
         <ValidationSummary />
         <span>@concurrentUpdateErrorMessage</span>
     </fieldset>
+    <button type="button" disabled="@cannotCancel" @onclick="OnCancelButtonClicked">キャンセル</button>
 </EditForm>
 
 @code {
@@ -54,14 +53,14 @@
     // ビューモデル
     private EditViewModel vm = new EditViewModel();
     private string concurrentUpdateErrorMessage = "";
-    private bool isFormDisabled = false;
+    private bool isProcessing = false;
+    private bool cannotCancel = false;
 
     // イベントハンドラ(アプリケーション処理)
     protected override async Task OnInitializedAsync()
     {
         Author? editAuthor = null;
-        await using (var pubs = DbFactory.CreateDbContext())
-        {
+        await using (var pubs = await DbFactory.CreateDbContextAsync()){
             var query = from a in pubs.Authors
                         where a.AuthorId == this.AuthorId
                         select a;
@@ -72,12 +71,12 @@
 
         // View に引き渡すデータを準備する
         vm = new EditViewModel()
-        {
-            AuthorId = editAuthor.AuthorId,
-            AuthorFirstName = editAuthor.AuthorFirstName,
-            AuthorLastName = editAuthor.AuthorLastName,
-            Phone = editAuthor.Phone
-        };
+            {
+                AuthorId = editAuthor.AuthorId,
+                AuthorFirstName = editAuthor.AuthorFirstName,
+                AuthorLastName = editAuthor.AuthorLastName,
+                Phone = editAuthor.Phone
+            };
 
         // データ更新時に再利用する(楽観同時実行制御処理用)
         originalAuthor = editAuthor;
@@ -87,40 +86,48 @@
 
     private async Task OnEditFormSubmitted()
     {
-        isFormDisabled = true;
+        if (isProcessing) return; // 処理中の場合はなにもせず復帰
+        isProcessing = true;   // 処理中フラグを立てる
+        cannotCancel = true; // 処理中はキャンセル不可にする
 
         // データベースに登録を試みる
-        await using PubsDbContext pubs = DbFactory.CreateDbContext();
-        Author target = originalAuthor!;
+        await using (PubsDbContext pubs = await DbFactory.CreateDbContextAsync()) {
 
-        target.AuthorFirstName = vm.AuthorFirstName;
-        target.AuthorLastName = vm.AuthorLastName;
-        target.Phone = vm.Phone;
+            // データベースから最初に読みだしたときのデータをベースにする
+            Author target = originalAuthor!;
 
-        pubs.Entry<Author>(target).State = EntityState.Modified;
+            // 更新データで書き換える
+            target.AuthorFirstName = vm.AuthorFirstName;
+            target.AuthorLastName = vm.AuthorLastName;
+            target.Phone = vm.Phone;
+            pubs.Entry<Author>(target).State = EntityState.Modified;
 
-        try
-        {
-            // 同時実行制御（Timestamp 列で制御）
-            await pubs.SaveChangesAsync();
+            try
+            {
+                // 同時実行制御（Timestamp 列で制御）
+                await pubs.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                // エラーメッセージを追加して画面に表示する
+                concurrentUpdateErrorMessage = "他のユーザがすでに当該データを更新しています。一度キャンセルして最初からやり直してください。";
+                cannotCancel = false; // キャンセル可能にフラグを戻す
+                return;
+            }
         }
-        catch (DbUpdateConcurrencyException)
-        {
-            // 独自にエラーを追加して画面を返す
-            concurrentUpdateErrorMessage = "他のユーザがすでに当該データを更新しています。もう一度はじめからやり直してください。";
-            isFormDisabled = false;
-            return;
-        }
+
+        // isProcessing = false; ここではフラグを下ろさずにページ遷移する
+
         // 正常に登録できた場合には、一覧画面に帰る
         NavigationManager.NavigateTo("Sample11");
     }
 
     private void OnCancelButtonClicked()
     {
-        NavigationManager.NavigateTo("Sample11");
+        if (!cannotCancel) NavigationManager.NavigateTo("Sample11");
     }
 
-    [CustomValidation(typeof(EditViewModel), "NameAndPhoneCheck")]
+    [CustomValidation(typeof(EditViewModel), "ValidateFullName")]
     public class EditViewModel
     {
         // 入力対象でないフィールドにはデータアノテーションを付与する必要はない
@@ -143,7 +150,7 @@
         public string Phone { get; set; } = string.Empty;
 
         // フォームレベルでの単体入力チェック項目に対するロジックなどを実装
-        public static ValidationResult NameAndPhoneCheck(EditViewModel vm, ValidationContext ctx)
+        public static ValidationResult ValidateFullName(EditViewModel vm, ValidationContext ctx)
         {
             if (vm.AuthorFirstName == "Nobuyuki" && vm.AuthorLastName == "Akama")
                 return new ValidationResult("Nobuyuki Akama という名前は予約済みのため登録できません。", new List<string>() { "AuthorFirstName", "AuthorLastName" });

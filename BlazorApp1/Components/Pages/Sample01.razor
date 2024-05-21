@@ -30,14 +30,15 @@ else
 }
 
 @code {
-    // List<T> 定義はダメ、IQueryable<T> での定義が必要
-    // null 許容にしておき、null の場合はロード中という扱いにする
+    // データバインドに使用する変数
+    // List<T> 定義はダメ、IQueryable<T> での定義が必要。null 許容にしておき、null の場合はロード中という扱いにする
     private IQueryable<Author>? authors = null;
 
-    // メモリ取り込みしたデータをバインド（インメモリ IQueryable<T>）
+    // ページ初期化時に呼び出されるイベントハンドラ
     protected override async Task OnInitializedAsync()
     {
-        await using var pubs = DbFactory.CreateDbContext();
-        authors = (await pubs.Authors.ToListAsync()).AsQueryable();
+        await using (var pubs = await DbFactory.CreateDbContextAsync()){
+            authors = (await pubs.Authors.ToListAsync()).AsQueryable();
+	    }
     }
 }

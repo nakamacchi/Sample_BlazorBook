@@ -32,6 +32,6 @@ dl dd {
     background-color: rgba(0,0,0,0.04);
 }
 
-    ::deep tbody tr:nth-child(odd) {
-        background: rgba(255,255,255,0.4);
-    }
+::deep tbody tr:nth-child(odd) {
+    background: rgba(255,255,255,0.4);
+}
