@@ -1,0 +1,43 @@
+﻿@page "/Sample01"
+@using BlazorApp1.Data
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+
+@* アプリケーションサービス *@
+@inject IDbContextFactory<PubsDbContext> DbFactory
+
+<h3>Sample01 : 一覧表示</h3>
+<!-- https://aspnet.github.io/quickgridsamples/datasources -->
+
+@if (authors == null)
+{
+    <div>データロード中...</div>
+}
+else
+{
+    <!-- スタイル適用のために div タグで囲む -->
+    <div>
+        <!-- 自動列生成機能はないため、プロパティ列の指定が必要 -->
+        <QuickGrid Items="@authors">
+            <PropertyColumn Property="@(a => a.AuthorId)" Title="著者ID" />
+            <PropertyColumn Property="@(a => a.AuthorFirstName)" Title="著者(名)" />
+            <PropertyColumn Property="@(a => a.AuthorLastName)" Title="著者(姓)" />
+            <PropertyColumn Property="@(a => a.Phone)" Title="電話番号" />
+            <PropertyColumn Property="@(a => a.State)" Title="州" />
+            <PropertyColumn Property="@(a => a.Contract)" Title="契約有無" />
+        </QuickGrid>
+    </div>
+}
+
+@code {
+    // List<T> 定義はダメ、IQueryable<T> での定義が必要
+    // null 許容にしておき、null の場合はロード中という扱いにする
+    private IQueryable<Author>? authors = null;
+
+    // メモリ取り込みしたデータをバインド（インメモリ IQueryable<T>）
+    protected override async Task OnInitializedAsync()
+    {
+        await using var pubs = DbFactory.CreateDbContext();
+        authors = (await pubs.Authors.ToListAsync()).AsQueryable();
+    }
+}

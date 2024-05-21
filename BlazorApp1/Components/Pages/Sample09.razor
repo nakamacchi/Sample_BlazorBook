@@ -1,0 +1,20 @@
+﻿@page "/Sample09"
+@using BlazorApp1.Data
+@using Microsoft.EntityFrameworkCore
+
+@* アプリケーションサービス *@
+@inject IDbContextFactory<PubsDbContext> DbFactory
+
+<h3>Sample09 : コンポーネント化</h3>
+
+<AuthorsGrid Authors="@authors" />
+
+@code {
+    private IQueryable<Author>? authors = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await using var pubs = DbFactory.CreateDbContext();
+        authors = (await pubs.Authors.ToListAsync()).AsQueryable();
+    }
+}

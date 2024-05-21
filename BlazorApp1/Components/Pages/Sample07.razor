@@ -1,0 +1,100 @@
+﻿@page "/Sample07"
+@using BlazorApp1.Data
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+
+@* アプリケーションサービス *@
+@inject IDbContextFactory<PubsDbContext> DbFactory
+
+<h3>Sample07 : 行選択機能</h3>
+<!-- https://aspnet.github.io/quickgridsamples/columns -->
+
+@if (authors == null)
+{
+    <div>データロード中...</div>
+}
+else
+{
+    <div>
+        <QuickGrid Items="@authors" Pagination="@paginationState">
+            <TemplateColumn Title="著者ID" Sortable="true">
+                <!-- 通常のボタンを使いたい場合 -->
+                @* <button @onclick="@(() => OnSelectButtonClicked(context))">@(context.AuthorId)</button> *@
+                <!-- ハイパーリンクボタンを使いたい場合 -->
+                <a href="" @onclick="@(() => OnSelectButtonClicked(context))" @onclick:preventDefault>@(context.AuthorId)</a>
+
+            </TemplateColumn>
+            <TemplateColumn Title="著者名">
+                @(context.AuthorFirstName) @(context.AuthorLastName)
+            </TemplateColumn>
+            <PropertyColumn Property="@(a => a.Phone)" Title="電話番号" />
+            <PropertyColumn Property="@(a => a.State)" Title="州" />
+            <TemplateColumn Title="契約有無">
+                <input type="checkbox" disabled value="@(context.Contract)" />
+                @(context.Contract ? "契約あり" : "契約なし")
+            </TemplateColumn>
+        </QuickGrid>
+
+        <!-- 表示するページを、paginationState データを介して連携 -->
+        <Paginator State="@paginationState" />
+    </div>
+}
+
+@if (AuthorToDisplay == null)
+{
+    <span>著者を選択してください。</span>    
+}
+else
+{
+    <p>@Message</p>
+
+    <div>
+        <dl>
+            <dt>著者ID</dt><dd>@AuthorToDisplay.AuthorId</dd>
+            <dt>著者名</dt><dd>@AuthorToDisplay.AuthorFirstName @AuthorToDisplay.AuthorLastName</dd>
+            <dt>住所</dt><dd>@AuthorToDisplay.Address @AuthorToDisplay.City @AuthorToDisplay.State @AuthorToDisplay.Zip</dd>
+            <dt>電話番号</dt><dd>@AuthorToDisplay.Phone</dd>
+            <dt>契約有無</dt><dd>@(AuthorToDisplay.Contract ? "契約あり" : "契約なし")</dd>
+            <dt>執筆書籍数</dt><dd>@(AuthorToDisplay.TitleAuthors.Count())</dd>
+        </dl>
+    </div>
+    <div>
+        <QuickGrid Items="@Titles">
+            <PropertyColumn Property="@(t => t.TitleId)" Title="書籍ID" />
+            <PropertyColumn Property="@(t => t.TitleName)" Title="書籍名" />
+            <PropertyColumn Property="@(t => t.Price)" Title="価格" />
+            <PropertyColumn Property="@(t => (t.Publisher != null) ? t.Publisher!.PublisherName : null)" Title="出版社名" />
+        </QuickGrid>
+    </div>
+}
+
+@code {
+    private IQueryable<Author>? authors;
+    PaginationState paginationState = new() { ItemsPerPage = 10 };
+    private string? Message { get; set; }
+    private IQueryable<Title>? Titles { get; set; }
+    private Author? AuthorToDisplay { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using (var pubs = DbFactory.CreateDbContext())
+        {
+            authors = (await pubs.Authors.ToListAsync()).AsQueryable();
+        }
+    }
+
+    private async void OnSelectButtonClicked(Author selectedAuthor)
+    {
+        this.Message = $"{selectedAuthor.AuthorFirstName} {selectedAuthor.AuthorLastName} さんの情報は以下の通りです。";
+
+        await using var pubs = DbFactory.CreateDbContext();
+        Titles = (await pubs.Titles.Where(t => t.TitleAuthors
+            .Where(ta => ta.AuthorId == selectedAuthor.AuthorId).Count() > 0)
+            .Include(t => t.Publisher)
+            .ToListAsync()).AsQueryable();
+
+        AuthorToDisplay = await pubs.Authors
+            .Include(a => a.TitleAuthors)
+            .FirstOrDefaultAsync(a => a.AuthorId == selectedAuthor.AuthorId);
+    } 
+}

@@ -1,0 +1,47 @@
+﻿@page "/Sample04"
+@using BlazorApp1.Data
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+
+@* アプリケーションサービス *@
+@inject IDbContextFactory<PubsDbContext> DbFactory
+
+<h3>Sample04 : ページング</h3>
+<!-- https://aspnet.github.io/quickgridsamples/paging -->
+
+@if (authors == null)
+{
+    <div>データロード中...</div>
+}
+else
+{
+    <div>
+        <!-- ページング状態を、paginationState データを介して連携 -->
+        <QuickGrid Items="@authors" Pagination="@paginationState">
+            <PropertyColumn Property="@(a => a.AuthorId)" Title="著者ID" Sortable="true" />
+            <TemplateColumn Title="著者名" Sortable="true" SortBy="@(GridSort<Author>.ByAscending(a => a.AuthorFirstName).ThenAscending(a => a.AuthorLastName))">
+                @(context.AuthorFirstName) @(context.AuthorLastName)
+            </TemplateColumn>
+            <PropertyColumn Property="@(a => a.Phone)" Title="電話番号" Sortable="true" />
+            <PropertyColumn Property="@(a => a.State)" Title="州" Sortable="true" />
+            <TemplateColumn Title="契約有無" Sortable="true" SortBy="@(GridSort<Author>.ByAscending(a => a.Contract))">
+                <input type="checkbox" disabled value="@(context.Contract)" />
+                @(context.Contract ? "契約あり" : "契約なし")
+            </TemplateColumn>
+        </QuickGrid>
+
+        <!-- 表示するページを、paginationState データを介して連携 -->
+        <Paginator State="@paginationState" />
+    </div>
+}
+
+@code {
+    private IQueryable<Author>? authors = null;
+    private readonly PaginationState paginationState = new() { ItemsPerPage = 10 };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await using var pubs = DbFactory.CreateDbContext();
+        authors = (await pubs.Authors.ToListAsync()).AsQueryable();
+    }
+}

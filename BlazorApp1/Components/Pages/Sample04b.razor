@@ -1,0 +1,51 @@
+﻿@page "/Sample04b"
+@using BlazorApp1.Data
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+
+@* アプリケーションサービス *@
+@inject IDbContextFactory<PubsDbContext> DbFactory
+
+<h3>Sample04b : （参考）大量ページング（仮想化）</h3>
+<!-- https://aspnet.github.io/quickgridsamples/virtualizing -->
+
+<div class="grid" tabindex="-1">
+    <QuickGrid ItemsProvider="@ItemsProvider" Virtualize="true" ItemSize="5">
+        <PropertyColumn Property="@(a => a.AuthorId)" Title="著者ID" />
+        <TemplateColumn Title="著者名">
+            @(context.AuthorFirstName) @(context.AuthorLastName)
+        </TemplateColumn>
+        <PropertyColumn Property="@(a => a.Phone)" Title="電話番号" />
+        <PropertyColumn Property="@(a => a.State)" Title="州" />
+        <TemplateColumn Title="契約有無">
+            <input type="checkbox" disabled value="@(context.Contract)" />
+            @(context.Contract ? "契約あり" : "契約なし")
+        </TemplateColumn>
+    </QuickGrid>
+</div>
+
+<!-- (参考) クエリ発行タイミングを見るためのデバッグ用ラベル -->
+<p>@LogMessage</p>
+
+@code {
+    private GridItemsProvider<Author>? ItemsProvider { get; set; }
+    private string? LogMessage { get; set; }
+
+    protected override void OnInitialized()
+    {
+        // UI から要求されたときにデータを取得して返すプロバイダを登録する
+        ItemsProvider = async request =>
+        {
+            // typeof(request) = GridItemsProviderRequest<Author>
+            // StartIndex, Count, SortByColumn, SortByAscending 情報が含まれている
+
+            LogMessage += "(" + request.StartIndex + " " + request.Count + ") ";
+            StateHasChanged();
+
+            await using var pubs = DbFactory.CreateDbContext();
+            var data = await pubs.Authors.Skip(request.StartIndex).Take(request.Count ?? 0).ToListAsync();
+            var totalCount = await pubs.Authors.CountAsync();
+            return GridItemsProviderResult.From(data, totalCount);
+        };
+    }
+}

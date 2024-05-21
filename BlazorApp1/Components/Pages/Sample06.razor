@@ -1,0 +1,38 @@
+﻿@page "/Sample06"
+@using BlazorApp1.Data
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+
+@* アプリケーションサービス *@
+@inject IDbContextFactory<PubsDbContext> DbFactory
+
+<h3>Sample06 : スタイリング</h3>
+
+@if (authors == null)
+{
+    <div>データロード中...</div>
+}
+else
+{
+    <!-- div タグに囲んでおかないとスタイリングが機能しない -->
+    <div>
+        <QuickGrid Items="@authors" ResizableColumns="true">
+            <PropertyColumn Property="@(a => a.AuthorId)" Title="著者ID" />
+            <PropertyColumn Property="@(a => a.AuthorFirstName)" Title="著者(名)" />
+            <PropertyColumn Property="@(a => a.AuthorLastName)" Title="著者(姓)" />
+            <PropertyColumn Property="@(a => a.Phone)" Title="電話番号" />
+            <PropertyColumn Property="@(a => a.State)" Title="州" />
+            <PropertyColumn Property="@(a => a.Contract)" Title="契約有無" />
+        </QuickGrid>
+    </div>
+}
+
+@code {
+    private IQueryable<Author>? authors = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await using var pubs = DbFactory.CreateDbContext();
+        authors = (await pubs.Authors.ToListAsync()).AsQueryable();
+    }
+}

@@ -1,0 +1,60 @@
+﻿@page "/Sample11"
+@using BlazorApp1.Data
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+
+@* アプリケーションサービス *@
+@inject IDbContextFactory<PubsDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<h3>Sample11 : 楽観同時実行制御機能つきデータ更新</h3>
+
+@if (authors == null)
+{
+    <span>データロード中...</span>
+}
+else
+{
+    <span>データを更新する著者を選択してください。</span>
+
+    <div>
+        <QuickGrid Items="@authors" Pagination="@paginationState">
+            <TemplateColumn Title="著者ID" Sortable="true">
+                <!-- 通常のボタンを使いたい場合 -->
+                @* <button @onclick="@(() => OnSelectButtonClicked(context))">@(context.AuthorId)</button> *@
+                <!-- ハイパーリンクボタンを使いたい場合 -->
+                <a href="" @onclick="@(() => OnSelectButtonClicked(context))" @onclick:preventDefault>@(context.AuthorId)</a>
+
+            </TemplateColumn>
+            <TemplateColumn Title="著者名">
+                @(context.AuthorFirstName) @(context.AuthorLastName)
+            </TemplateColumn>
+            <PropertyColumn Property="@(a => a.Phone)" Title="電話番号" />
+            <PropertyColumn Property="@(a => a.State)" Title="州" />
+            <TemplateColumn Title="契約有無">
+                <input type="checkbox" disabled value="@(context.Contract)" />
+                @(context.Contract ? "契約あり" : "契約なし")
+            </TemplateColumn>
+        </QuickGrid>
+
+        <Paginator State="@paginationState" />
+    </div>
+}
+
+@code {
+    private IQueryable<Author>? authors = null;
+    private readonly PaginationState paginationState = new() { ItemsPerPage = 10 };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await using var pubs = DbFactory.CreateDbContext();
+        authors = (await pubs.Authors.ToListAsync()).AsQueryable();
+    }
+
+    private void OnSelectButtonClicked(Author selectedAuthor)
+    {
+        // 画面間情報引継ぎには Scoped オブジェクトを使うが、ここではクエリパラメータで引き渡す
+        // 次の画面ではデータ入力検証が必要
+        NavigationManager.NavigateTo("Sample11b/" + selectedAuthor.AuthorId);
+    } 
+}

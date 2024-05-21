@@ -1,0 +1,97 @@
+﻿@page "/Sample08b/{AuthorId}"
+@using BlazorApp1.Data
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+
+@* アプリケーションサービス *@
+@inject IDbContextFactory<PubsDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<h3>Sample08b : 画面遷移</h3>
+
+@if (AuthorToDisplay == null)
+{
+    <span>著者を選択してください。</span>
+}
+else
+{
+    <p>@Message</p>
+
+    <div>
+        <dl>
+            <dt>著者ID</dt>
+            <dd>@AuthorToDisplay.AuthorId</dd>
+            <dt>著者名</dt>
+            <dd>@AuthorToDisplay.AuthorFirstName @AuthorToDisplay.AuthorLastName</dd>
+            <dt>住所</dt>
+            <dd>@AuthorToDisplay.Address @AuthorToDisplay.City @AuthorToDisplay.State @AuthorToDisplay.Zip</dd>
+            <dt>電話番号</dt>
+            <dd>@AuthorToDisplay.Phone</dd>
+            <dt>契約有無</dt>
+            <dd>
+                @(
+                    AuthorToDisplay.Contract ? "契約あり" : "契約なし"
+                    )
+            </dd>
+            <dt>執筆書籍数</dt>
+            <dd>
+                @(
+                    AuthorToDisplay.TitleAuthors.Count()
+                    )
+            </dd>
+        </dl>
+    </div>
+    <div>
+        <QuickGrid Items="@Titles">
+            <PropertyColumn Property="@(t => t.TitleId)" Title="書籍ID" />
+            <PropertyColumn Property="@(t => t.TitleName)" Title="書籍名" />
+            <PropertyColumn Property="@(t => t.Price)" Title="価格" />
+            <PropertyColumn Property="@(t => (t.Publisher == null) ? t.Publisher!.PublisherName : null)" Title="出版社名" />
+        </QuickGrid>
+    </div>
+}
+
+<br />
+
+<!-- 通常のボタンを使いたい場合 -->
+@* <button @onclick="@(OnReturnButtonClicked)">著者選択画面に戻る</button> *@
+<!-- ハイパーリンクボタンを使いたい場合 -->
+<a href="" @onclick="@(OnReturnButtonClicked)" @onclick:preventDefault>著者選択画面に戻る</a>
+
+@code {
+    private string? Message { get; set; }
+    private IQueryable<Title>? Titles { get; set; }
+    private Author? AuthorToDisplay { get; set; }
+
+    [Parameter]
+    public required string AuthorId { get; init; }
+
+    protected override void OnParametersSet()
+    {
+        // セキュリティ対策
+        if (String.IsNullOrEmpty(AuthorId)) throw new ArgumentNullException("AuthorId");
+        if (System.Text.RegularExpressions.Regex.IsMatch(AuthorId, @"^\d{3}-\d{2}-\d{4}$") == false) throw new ArgumentException("AuthorId");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await using var pubs = DbFactory.CreateDbContext();
+        Titles = (await pubs.Titles.Where(t => t.TitleAuthors
+            .Where(ta => ta.AuthorId == this.AuthorId).Count() > 0) // Count() > 0 は Any() にできない？
+            .Include(t => t.Publisher)
+            .ToListAsync()).AsQueryable();
+
+        AuthorToDisplay = await pubs.Authors
+            .Include(a => a.TitleAuthors)
+            .FirstOrDefaultAsync(a => a.AuthorId == this.AuthorId);
+
+        Message = AuthorToDisplay is null ?
+            null :
+            $"{AuthorToDisplay.AuthorFirstName} {AuthorToDisplay.AuthorLastName} さんの情報は以下の通りです。";
+    }
+
+    private void OnReturnButtonClicked()
+    {
+        NavigationManager.NavigateTo("Sample08");
+    }
+}
