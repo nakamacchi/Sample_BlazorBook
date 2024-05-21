@@ -1,6 +1,8 @@
 # C#ユーザーのためのWebアプリ開発パターン ASP.NET Core Blazorによるエンタープライズアプリ開発
 
-本ページは、インプレス様から出版している「[C#ユーザーのためのWebアプリ開発パターン ASP.NET Core Blazorによるエンタープライズアプリ開発](https://book.impress.co.jp/books/1122101173)」のサンプルを掲載しているページです。
+本ページでは、インプレス様から出版している「[C#ユーザーのためのWebアプリ開発パターン ASP.NET Core Blazorによるエンタープライズアプリ開発](https://book.impress.co.jp/books/1122101173)」のサンプルコードを掲載しております。
+
+※ 本ページ末尾に、本書の正誤表を掲載しております。併せてご確認ください。
 
 ## サンプルコードについて
 
@@ -36,3 +38,16 @@
 | 随時切断型 Web アプリ | Blazor WASM 型 (従来型) | Blazor Web Assembly アプリ | (指定なし) | InteractiveWebAssembly (prerender: false) | [Source](https://github.com/nakamacchi/AzRefArc.AspNetBlazorWasm) [Web](https://azrefarc-aspnetblazorwasm.azurewebsites.net/) |
 | インターネット B2C アプリ | Blazor United 型 (.NET 8) | Blazor Web App | Interactivity Type = Server and WebAssembly, Intaractivity Location = per page/component | Static SSR, InteractiveServer, WASM, Auto | [Source](https://github.com/nakamacchi/AzRefArc.AspNetBlazorUnited) [Web](https://azrefarc-aspnetblazorunited.azurewebsites.net/) |
 
+## 正誤表
+
+本書の一部に謝りがありました。大変申し訳ありませんが、以下の通り訂正させてください。（ご指摘いただきました皆様、大変ありがとうございました。）
+
+### p.346 A2.6 様々な本番環境への配置方法
+
+- In-Process 型ホスティングを利用するケースとして、「IIS の Windows 統合認証機能を利用したい」というケースを挙げていますが、現在では Out-Process 型ホスティングでも IIS から認証情報を引き継ぐことができるようになりました。([参考](https://learn.microsoft.com/ja-jp/aspnet/core/host-and-deploy/iis/out-of-process-hosting?view=aspnetcore-8.0#application-configuration))
+- Out-Process 型ホスティングを利用したい場合には、プロジェクトファイルに <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel> を追加する必要があります。（[参考](https://learn.microsoft.com/ja-jp/aspnet/core/host-and-deploy/iis/out-of-process-hosting?view=aspnetcore-8.0#out-of-process-hosting-model)）
+
+### p.131 表6.1 主なアノテーション
+
+- "複合キーの場合は複数のカラムに [Key] を付与" としていますが、この方法では複合キーの設定はできません。
+- アノテーションで指定する場合には、POCO クラスの属性として、[PrimaryKey(nameof(キー1), nameof(キー2), nameof(キー3), ...)] と指定する必要があります。
