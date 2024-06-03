@@ -32,7 +32,8 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        await using var pubs = DbFactory.CreateDbContext();
-        authors = (await pubs.Authors.ToListAsync()).AsQueryable();
+        await using (var pubs = await DbFactory.CreateDbContextAsync()){
+            authors = (await pubs.Authors.ToListAsync()).AsQueryable();
+	    }
     }
 }

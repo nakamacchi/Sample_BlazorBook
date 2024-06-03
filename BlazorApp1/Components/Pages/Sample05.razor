@@ -31,7 +31,7 @@
     <PropertyColumn Property="@(a => a.Phone)" Title="電話番号" Sortable="true" />
     <PropertyColumn Property="@(a => a.State)" Title="州" Sortable="true" />
     <TemplateColumn Title="契約有無" Sortable="true" SortBy="@(GridSort<Author>.ByAscending(a => a.Contract))">
-        <input type="checkbox" disabled value="@(context.Contract)" />
+        <input type="checkbox" disabled checked="@(context.Contract)" />
         @(context.Contract ? "契約あり" : "契約なし")
     </TemplateColumn>
 </QuickGrid>
@@ -39,10 +39,18 @@
 <Paginator State="@paginationState" />
 
 @code {
+    // 選択候補となる州名のリスト
+    private List<string?> states = new();
+    // 著者一覧を格納する
+    private IQueryable<Author>? authors = null;
+    // ページング状態を管理する変数
+    private readonly PaginationState paginationState = new() { ItemsPerPage = 10 };
+
+    // データバインドに使用するクラスと変数を定義
     public class ViewModel { public string SelectedState { get; set; } = ""; }
     private ViewModel vm { get; } = new();
-    private readonly PaginationState paginationState = new() { ItemsPerPage = 10 };
-    private List<string?> states = new();
+
+    // フィルタした結果を返すプロパティを定義
     private IQueryable<Author>? FilteredAuthors
     {
         get
@@ -52,12 +60,12 @@
         }
     }
 
-    private IQueryable<Author>? authors = null;
-
+    // ページ初期化時に呼び出されるイベントハンドラ
     protected override async Task OnInitializedAsync()
     {
-        await using var pubs = DbFactory.CreateDbContext();
-        authors = (await pubs.Authors.ToListAsync()).AsQueryable();
-        states = await pubs.Authors.Select(a => a.State).Distinct().ToListAsync();
+        await using (var pubs = await DbFactory.CreateDbContextAsync()) {
+            authors = (await pubs.Authors.ToListAsync()).AsQueryable();
+            states = await pubs.Authors.Select(a => a.State).Distinct().ToListAsync();
+	    }
     }
 }

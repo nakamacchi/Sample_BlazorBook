@@ -75,15 +75,16 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        await using var pubs = DbFactory.CreateDbContext();
-        Titles = (await pubs.Titles.Where(t => t.TitleAuthors
-            .Where(ta => ta.AuthorId == this.AuthorId).Count() > 0) // Count() > 0 は Any() にできない？
-            .Include(t => t.Publisher)
-            .ToListAsync()).AsQueryable();
+        await using (var pubs = await DbFactory.CreateDbContextAsync()){
+            Titles = (await pubs.Titles.Where(t => t.TitleAuthors
+                .Where(ta => ta.AuthorId == this.AuthorId).Count() > 0) // Count() > 0 は Any() にできない？
+                .Include(t => t.Publisher)
+                .ToListAsync()).AsQueryable();
 
-        AuthorToDisplay = await pubs.Authors
-            .Include(a => a.TitleAuthors)
-            .FirstOrDefaultAsync(a => a.AuthorId == this.AuthorId);
+            AuthorToDisplay = await pubs.Authors
+                .Include(a => a.TitleAuthors)
+                .FirstOrDefaultAsync(a => a.AuthorId == this.AuthorId);
+        }
 
         Message = AuthorToDisplay is null ?
             null :

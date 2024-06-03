@@ -30,7 +30,7 @@ else
             <PropertyColumn Property="@(a => a.Phone)" Title="電話番号" />
             <PropertyColumn Property="@(a => a.State)" Title="州" />
             <TemplateColumn Title="契約有無">
-                <input type="checkbox" disabled value="@(context.Contract)" />
+                <input type="checkbox" disabled checked="@(context.Contract)" />
                 @(context.Contract ? "契約あり" : "契約なし")
             </TemplateColumn>
         </QuickGrid>
@@ -83,18 +83,19 @@ else
         }
     }
 
-    private async void OnSelectButtonClicked(Author selectedAuthor)
+    private async Task OnSelectButtonClicked(Author selectedAuthor)
     {
         this.Message = $"{selectedAuthor.AuthorFirstName} {selectedAuthor.AuthorLastName} さんの情報は以下の通りです。";
 
-        await using var pubs = DbFactory.CreateDbContext();
-        Titles = (await pubs.Titles.Where(t => t.TitleAuthors
-            .Where(ta => ta.AuthorId == selectedAuthor.AuthorId).Count() > 0)
-            .Include(t => t.Publisher)
-            .ToListAsync()).AsQueryable();
+        await using (var pubs = await DbFactory.CreateDbContextAsync()){
+            Titles = (await pubs.Titles.Where(t => t.TitleAuthors
+                .Where(ta => ta.AuthorId == selectedAuthor.AuthorId).Count() > 0)
+                .Include(t => t.Publisher)
+                .ToListAsync()).AsQueryable();
 
-        AuthorToDisplay = await pubs.Authors
-            .Include(a => a.TitleAuthors)
-            .FirstOrDefaultAsync(a => a.AuthorId == selectedAuthor.AuthorId);
+            AuthorToDisplay = await pubs.Authors
+                .Include(a => a.TitleAuthors)
+                .FirstOrDefaultAsync(a => a.AuthorId == selectedAuthor.AuthorId);
+        }
     } 
 }
