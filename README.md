@@ -79,6 +79,140 @@
 - p.83 図5.2 の Routers.razor は Routes.razor の誤植です。
 - p.171 Index.razor ではなく Home.razor が正しいです。
 
+## 正誤表（2024/08/16 追記）
+
+さらに読者の方から以下の指摘をいただきました。ご指摘いただきました読者の方にこの場を借りてお礼申し上げます。ありがとうございました。
+
+### p.53 OnInitializedAsync() 処理について
+
+リスト 3.8 に示されているコードサンプルですが、このページを開く際に、
+
+- まずホームページ（例えば https://localhost:7224/ など）を開いたのち、リンクによって遷移してきた場合には問題なく動作しますが、
+- 直接このページ（例えば https://localhost:7224/Counter など）を開くと、以下の例外が発生し、正しく動作しません。
+
+```C#
+InvalidOperationException: JavaScript interop calls cannot be issued at this time. This is because the component is being statically rendered. When prerendering is enabled, JavaScript interop calls can only be performed during the OnAfterRenderAsync lifecycle method.
+```
+
+これは以下の理由によるものです。
+
+- .NET 8 以降の Blazor には、後半の第11章で解説しているプリレンダリング機能が備わっており、既定で有効化されています。
+- この機能が有効化されている場合、OnInitializedAsync() 処理では JavaScript 関連の処理を記述することができません。（詳細 → https://learn.microsoft.com/ja-jp/aspnet/core/blazor/components/lifecycle?view=aspnetcore-8.0）
+
+解決方法としては 2 通りあります。
+
+- ① プリレンダリング機能を無効化した上で、OnInitializedAsync() 処理に記述する。（11.7.1 節にて解説）
+- ② プリレンダリング機能はそのままで、OnAfterRenderAsync(bool firstRender) 処理に記述する。
+
+ただし②の方法を採る場合、レンダリング処理がすでに完了しているため、このメソッドの中でデータ変数を更新しても UI 側に反映されません（再バインドされない）。このため、例えば リスト3.8 のケースで②の方法を使う場合には、以下のように、メソッドの最後に this.StateHasChanged(); 命令を入れる必要があります。
+
+```C#
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var result = await storage.GetAsync<int>("CurrentCount");
+        currentCount = result.Success ? result.Value : 0;
+        this.StateHasChanged();
+    }
+```
+
+状況に応じて最適な方法を選択していただくことになりますが、第 11 章で解説しているように、プリレンダリング機能がそもそも不要なケースも多いと思います。プリレンダリング機能が不要な場合には、①の方法の方が素直な解決策になりますので、そちらをオススメします。
+
+### p.203 パラメータのチェックに関して
+
+p.203 の解説では、「OnParametersSet()メソッドの処理後、OnInitializedAsync()メソッドが呼び出されます」とありますがこれは誤りで、正しくは「OnInitializedAsync()メソッドの処理後、OnParametersSet()メソッドが呼び出されます」になります。このため、以下のように記述すると、不正なパラメータを使ったクエリが動作してしまうことになり、問題があります。
+
+```C#
+    [Parameter]
+    public required string AuthorId { get; init; }
+
+    // このメソッドは OnInitializedAsync() の後に動作する
+    protected override void OnParametersSet()
+    {
+        // セキュリティ対策
+        if (String.IsNullOrEmpty(AuthorId)) throw new ArgumentNullException("AuthorId");
+        if (System.Text.RegularExpressions.Regex.IsMatch(AuthorId, @"^\d{3}-\d{2}-\d{4}$") == false) throw new ArgumentException("AuthorId");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // 不正な URL パラメータが与えられた場合でも、この処理は動いてしまう
+        await using (var pubs = await DbFactory.CreateDbContextAsync())
+        {
+            Titles = (await pubs.Titles.Where(t => t.TitleAuthors
+                .Where(ta => ta.AuthorId == this.AuthorId).Count() > 0) // Count() > 0 は Any() にできない？
+                .Include(t => t.Publisher)
+                .ToListAsync()).AsQueryable();
+
+            AuthorToDisplay = await pubs.Authors
+                .Include(a => a.TitleAuthors)
+                .FirstOrDefaultAsync(a => a.AuthorId == this.AuthorId);
+        }
+
+        Message = AuthorToDisplay is null ?
+            null :
+            $"{AuthorToDisplay.AuthorFirstName} {AuthorToDisplay.AuthorLastName} さんの情報は以下の通りです。";
+    }
+```
+
+こちらに関しての解決方法は 2 通りあります。
+
+① OnInitializedAsync() 内で、パラメータを使った処理を行う前にチェックを行う。
+② SetParametersAsync(ParameterView parameters) メソッドでパラメータチェックを行う。
+
+①の方法の場合には、以下のような記述になります。シンプルでわかりやすいので、基本的にはこの方法がオススメです。
+
+```C#
+    [Parameter]
+    public required string AuthorId { get; init; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // セキュリティ対策
+        if (String.IsNullOrEmpty(AuthorId)) throw new ArgumentNullException("AuthorId");
+        if (System.Text.RegularExpressions.Regex.IsMatch(AuthorId, @"^\d{3}-\d{2}-\d{4}$") == false) throw new ArgumentException("AuthorId");
+
+        await using (var pubs = await DbFactory.CreateDbContextAsync())
+        {
+            Titles = (await pubs.Titles.Where(t => t.TitleAuthors
+                .Where(ta => ta.AuthorId == this.AuthorId).Count() > 0) // Count() > 0 は Any() にできない？
+                .Include(t => t.Publisher)
+                .ToListAsync()).AsQueryable();
+
+            AuthorToDisplay = await pubs.Authors
+                .Include(a => a.TitleAuthors)
+                .FirstOrDefaultAsync(a => a.AuthorId == this.AuthorId);
+        }
+
+        Message = AuthorToDisplay is null ?
+            null :
+            $"{AuthorToDisplay.AuthorFirstName} {AuthorToDisplay.AuthorLastName} さんの情報は以下の通りです。";
+    }
+```
+
+①の方法の難点は、実際にこの値が使われないとはいえ、不正な値が AuthorId パラメータに一時的とはいえ設定されてしまうことです。もし、そもそも AuthorId パラメータに不正な値がセットされること自体を防ぎたいのであれば、OnParametersSet() メソッドではなく、SetParametersAsync() メソッドを利用してください。この方法は、実際に [Parameter] 属性つき変数に値がセットされる前に処理を挿し込むものです。具体的な記述例としては以下になります。
+
+```C#
+    [Parameter]
+    public required string AuthorId { get; init; }
+
+    public override async Task SetParametersAsync(ParameterView parameters)
+    {
+        if (parameters.TryGetValue<string>(nameof(AuthorId), out var value))
+        {
+            // セキュリティ対策
+            if (String.IsNullOrEmpty(value)) throw new ArgumentNullException("AuthorId : " + value);
+            if (System.Text.RegularExpressions.Regex.IsMatch(value, @"^\d{3}-\d{2}-\d{4}$") == false) throw new ArgumentException("AuthorId : " + value);
+        }
+        await base.SetParametersAsync(parameters);
+    }
+```
+
+理想論的には②が望ましいですが、コードがやや複雑になりますので、①の実装で十分なことが多いと思います。ケースバイケースで使い分けてください。
+
+なお、それなら OnParametersSet() メソッドは何のためにあるのか？ という話になりますが、こちらはパラメータ値に依存するデータや UI 表示項目を更新する目的で利用します。具体例については以下のドキュメントを見てください。
+
+- https://learn.microsoft.com/ja-jp/aspnet/core/blazor/components/lifecycle?view=aspnetcore-8.0#after-parameters-are-set-onparameterssetasync
+
 ## その他
 
 本書ではクラウドサービスに関しては深く記載しておりませんが、以下のサイトでマイクロソフトのメンバーが整理した様々な技術資料をご参照いただけます。アプリケーションをクラウド上で運用する際に参考にしてください。
