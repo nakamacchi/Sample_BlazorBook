@@ -1,0 +1,17 @@
+@using BlazorApp1.Components.Shared
+
+<TextBox @ref="tbxName" Text="" PlaceholderText="名前を入力してください"></TextBox>
+<Button @ref="btnDisplay" Text="表示" OnClickCallback="@btnDisplay_Click"></Button>
+<Label @ref="lblMessage"></Label>
+
+@code
+{
+    private TextBox tbxName;
+    private Button btnDisplay;
+    private Label lblMessage;
+
+    private void btnDisplay_Click()
+    {
+        lblMessage.Text = tbxName.Text + " " + DateTime.Now.ToString();
+    }
+}

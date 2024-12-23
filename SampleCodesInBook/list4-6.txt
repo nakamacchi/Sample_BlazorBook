@@ -1,0 +1,50 @@
+@page "/biza/editauthor/{AuthorId}"
+
+<h3>著者データの更新</h3>
+
+<EditForm Model="@vm" OnValidSubmit="@btnSubmit_OnClick">
+    <DataAnnotationsValidator />
+
+    <dl>
+        <dt>著者ID</dt><dd>@vm.AuthorId</dd>
+        <dt>著者名(名)</dt><dd><InputText @bind-Value="vm.AuthorFirstName" /></dd>
+        <dt>著者名(姓)</dt><dd><InputText @bind-Value="vm.AuthorLastName" /></dd>
+        <dt>電話番号</dt><dd><InputText @bind-Value="vm.Phone" /></dd>
+    </dl>
+
+    <ValidationSummary />
+
+    <button type="submit">更新</button>
+    <button type="button" @onclick="btnCancel_OnClick">キャンセル</button>
+
+</EditForm>
+
+@code {
+    [Parameter]
+    public string AuthorId { get; set; } = null;
+
+    private EditAuthorViewModel vm { get; set; } = null;
+
+    [Inject]
+    private NavigationManager navigationManager { get; set; } = null;
+
+    protected override void OnInitialized()
+    {
+        // DB からデータを読み出し
+        vm = new EditAuthorViewModel() { AuthorId = this.AuthorId, AuthorFirstName = "Nobuyuki", AuthorLastName = "Akama", Phone = "123 456-7890" };
+    }
+
+    private void btnSubmit_OnClick()
+    {
+        // 入力されたデータをもとに DB を更新
+        // その上でメインメニューに戻る
+        navigationManager.NavigateTo("/");
+    }
+
+    private void btnCancel_OnClick()
+    {
+        // メインメニューに戻る
+        navigationManager.NavigateTo("/");
+    }
+}
+

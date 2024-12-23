@@ -1,0 +1,83 @@
+@page "/counter"
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+@inject Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage.ProtectedSessionStorage storage
+@inject NavigationManager nav
+
+@if (currentCount.HasValue)
+{
+    <p role="status">Current count: @currentCount</p>
+    <button class="btn btn-primary" @onclick="IncrementCount">増やす</button>
+    <button class="btn btn-primary" @onclick="MoveToNextPage">次のページへ</button>
+}
+else
+{
+    <p>データを取得中です...</p>
+}
+
+@code {
+    private int? currentCount = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await storage.GetAsync<int>("CurrentCount");
+        currentCount = result.Success ? result.Value : 0;
+    }
+
+    private async Task IncrementCount()
+    {
+        currentCount++;
+        await storage.SetAsync("CurrentCount", currentCount!.Value);
+    }
+
+    private void MoveToNextPage()
+    {
+        nav.NavigateTo("/Counter2");
+    }
+}
+
+
+
+@page "/counter2"
+
+<PageTitle>Counter2</PageTitle>
+
+<h1>Counter2</h1>
+
+@inject Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage.ProtectedSessionStorage storage
+@inject NavigationManager nav
+
+@if (currentCount.HasValue)
+{
+    <p role="status">Current count: @currentCount</p>
+    <button class="btn btn-info" @onclick="DecrementCount">減らす</button>
+    <button class="btn btn-info" @onclick="BackToPreviousPage">前のページへ</button>
+}
+else
+{
+    <p>データを取得中です...</p>
+}
+
+@code {
+    private int? currentCount = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await storage.GetAsync<int>("CurrentCount");
+        currentCount = result.Success ? result.Value : 0;
+    }
+
+    private async Task DecrementCount()
+    {
+        currentCount--;
+        await storage.SetAsync("CurrentCount", currentCount!.Value);
+    }
+
+    private void BackToPreviousPage()
+    {
+        nav.NavigateTo("/Counter");
+    }
+}

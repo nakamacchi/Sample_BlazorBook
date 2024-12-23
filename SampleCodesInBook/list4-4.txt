@@ -1,0 +1,20 @@
+@page "/biza/editauthor/{AuthorId}"
+
+<h3>著者データの更新</h3>
+
+<dl>
+    <dt>著者ID</dt><dd>@AuthorId</dd>
+    <dt>著者名(名)</dt><dd><input type="textbox" /></dd>
+    <dt>著者名(姓)</dt><dd><input type="textbox" /></dd>
+    <dt>電話番号</dt><dd><input type="textbox" /></dd>
+</dl>
+
+<button type="submit">更新</button>
+<button type="button">キャンセル</button>
+
+@code {
+    [Parameter]
+    public string AuthorId { get; set; } = null;
+
+}
+

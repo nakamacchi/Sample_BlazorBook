@@ -1,0 +1,34 @@
+public static IEnumerable<object[]> EditAuthorViewModelTestsData
+{
+    get
+    {
+        string[] lines = System.IO.File.ReadAllLines(@"EditAuthorViewModelTestsData.csv");
+        return lines.Select(line => line.Split(',')).Skip(1);
+    }
+}
+
+[TestMethod]
+[DeploymentItem(@"EditAuthorViewModelTestsData.csv")]
+[DynamicData(nameof(EditAuthorViewModelTestsData))]
+public void VariousInputPatternsErrorTest(string testId, string authorId, string authorFirstName, string authorLastName, string phone, string expectedErrorCount, string firstErrorMessage, string secondErrorMessage)
+{
+    EditAuthorViewModel vm = new EditAuthorViewModel()
+    {
+        AuthorId = authorId,
+        AuthorFirstName = authorFirstName,
+        AuthorLastName = authorLastName,
+        Phone = phone
+    };
+    var result = ValidationUtil.ValidateObject(vm);
+    TestContext.WriteLine("TestId {0} : {1}", testId, expectedErrorCount);
+    Assert.AreEqual(int.Parse(expectedErrorCount), result.Count(), "テスト ID = " + testId);
+    if (string.IsNullOrEmpty(firstErrorMessage) == false)
+    {
+        Assert.IsTrue(result.Select(r => r.ErrorMessage).Contains(firstErrorMessage), "テスト ID = " + testId);
+    }
+    if (string.IsNullOrEmpty(secondErrorMessage) == false)
+    {
+        Assert.IsTrue(result.Select(r => r.ErrorMessage).Contains(secondErrorMessage), "テスト ID = " + testId);
+    }
+    TestContext.WriteLine("TestId {0} : Successed.", testId);
+}

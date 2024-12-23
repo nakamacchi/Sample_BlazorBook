@@ -1,0 +1,15 @@
+<a href="/counter">カウンター</a>
+<a href="/weather">データ参照</a>
+
+<input type="button" @onclick="btnClick" value="ページ遷移" />
+
+@inject NavigationManager navigationManager
+
+@code
+{
+    private void btnClick()
+    {
+        navigationManager.NavigateTo("/counter");
+    }
+}
+

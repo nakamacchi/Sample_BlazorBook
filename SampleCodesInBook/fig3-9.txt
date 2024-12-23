@@ -1,0 +1,13 @@
+/* 入力フォームの整列用 */
+dl {
+    width: 500px;
+    margin: 6px;
+}
+
+dl dt {
+    float: left;
+}
+
+dl dd {
+    margin-left: 120px;
+}

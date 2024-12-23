@@ -1,0 +1,25 @@
+[CustomValidation(typeof(ContactPageViewModel), "EmailAndMobilePhoneCheck")]
+public class ContactPageViewModel
+{
+    [EmailAddress(ErrorMessage = "電子メールアドレスのフォーマットが不適切です。")]
+    public string Email { get; set; } = "";
+
+    [CustomValidation(typeof(ContactPageViewModel), "MobilePhoneCheck")]
+    public string MobilePhone { get; set; } = "";
+
+    public static ValidationResult MobilePhoneCheck(string mobilePhone, ValidationContext ctx)
+    {
+        if (string.IsNullOrEmpty(mobilePhone)) return ValidationResult.Success;
+        mobilePhone = mobilePhone.Replace("-", "").Replace(" ", "");
+        if (Regex.IsMatch(mobilePhone, "^(090|080|070)[0-9]{8}$") == true) return ValidationResult.Success;
+        return new ValidationResult("指定された番号は携帯電話の番号ではありません。", new List<string>() { "MobilePhone" });
+    }
+
+    public static ValidationResult EmailAndMobilePhoneCheck(ContactPageViewModel vm, ValidationContext ctx)
+    {
+        if (string.IsNullOrEmpty(vm.Email) && string.IsNullOrEmpty(vm.MobilePhone))
+            return new ValidationResult("電子メールアドレスまたは携帯電話のどちらか一方は入力してください。", 
+	new List<string>() { "Email", "MobilePhone" });
+        return ValidationResult.Success;
+    }
+}

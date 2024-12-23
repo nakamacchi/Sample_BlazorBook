@@ -1,0 +1,18 @@
+<Router AppAssembly="@typeof(App).Assembly">
+    ...
+</Router>
+
+
+@page "/biza/showauthorbyauthorid/{authorId?}"
+
+<h1>著者データの表示</h1>
+
+<dl>
+    <dt>著者 ID</dt>
+    <dl>@authorId</dl>
+</dl>
+
+@code {
+    [Parameter]
+    public string authorId { get; set; }
+}

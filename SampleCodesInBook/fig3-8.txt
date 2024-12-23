@@ -1,0 +1,10 @@
+<input type="button" value="はい" class="btn btn-primary" />
+<input type="button" value="いいえ" class="btn btn-default" />
+
+
+<button class="btn btn-primary">ボタン①</button>
+<button class="btn btn-info">ボタン②</button>
+<button class="btn btn-success">ボタン③</button>
+<button class="btn btn-light">ボタン④</button>
+<button class="btn btn-danger">ボタン⑤</button>
+

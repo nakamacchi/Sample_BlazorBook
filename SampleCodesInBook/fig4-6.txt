@@ -1,0 +1,7 @@
+public class EditAuthorViewModel
+{
+    public string AuthorId { get; set; } = "";
+    public string AuthorFirstName { get; set; } = "";
+    public string AuthorLastName { get; set; } = "";
+    public string Phone { get; set; } = "";
+}

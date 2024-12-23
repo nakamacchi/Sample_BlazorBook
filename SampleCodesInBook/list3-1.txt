@@ -1,0 +1,54 @@
+<span>@Text</span>
+
+@code {
+    private string _text = "";
+
+    [Parameter]
+    public string Text { 
+        get 
+        { 
+            return _text; 
+        }
+        set
+        {
+            _text = value;
+            this.StateHasChanged();
+        }
+    }
+}
+
+
+<input type="text" @bind="Text" placeholder="@PlaceholderText" />
+
+@code {
+    private string _text = "";
+    private string _placeholderText = "";
+
+    [Parameter]
+    public string Text
+    {
+        get
+        {
+            return _text;
+        }
+        set
+        {
+            _text = value;
+            this.StateHasChanged();
+        }
+    }
+
+    [Parameter]
+    public string PlaceholderText
+    {      
+        get
+        {
+            return _placeholderText;
+        }
+        set
+        {
+            _placeholderText = value;
+            this.StateHasChanged();
+        }
+    }
+}
