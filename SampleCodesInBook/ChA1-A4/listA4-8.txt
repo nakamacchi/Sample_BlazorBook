@@ -1,0 +1,12 @@
+■ null 条件演算子 (?.)（null だった場合のみ処理を行う機能）
+
+if (a != null) Console.WriteLine(a.Length) else Console.WriteLine(a);
+↓
+Console.WriteLine(a?.Length);
+
+■ null 合体演算子 (??)（null だった場合の代替処理を記述できる機能）
+
+Console.WriteLine((a != null ? a : "a は null です。"));
+↓
+Console.WriteLine(a ?? "a は null です。");
+

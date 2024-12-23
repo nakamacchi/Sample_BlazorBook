@@ -1,0 +1,16 @@
+...(前略)...
+builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+    .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = options.DefaultPolicy;
+});
+builder.Services.AddMicrosoftIdentityConsentHandler();
+builder.Services.AddControllersWithViews().AddMicrosoftIdentityUI(); // ログイン・ログアウト制御に必要
+var app = builder.Build();
+...(中略)...
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapControllers(); // ログイン・ログアウト制御に必要
+app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
+app.Run();

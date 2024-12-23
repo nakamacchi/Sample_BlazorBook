@@ -1,0 +1,38 @@
+@code
+{
+    [CascadingParameter]
+    Task<AuthenticationState> AuthenticationStateTask { get; set; } = null!;
+    protected override async Task OnInitializedAsync()
+    {
+        User = (await AuthenticationStateTask).User;
+    }
+    private ClaimsPrincipal? User { get; set; } = null;
+}
+
+@if (User != null)
+{
+    <table class="table">
+        <thead>
+        <th>Claim Issuer</th>
+        <th>Claim Subject</th>
+        <th>Claim Value</th>
+        <th>Claim Properties</th>
+        </thead>
+        <tbody>
+            @foreach (Claim claim in User.Claims)
+            {
+                <tr>
+                    <td>@claim.Issuer</td>
+                    <td>@claim.Subject</td>
+                    <td>@claim.Value</td>
+                    <td>
+                        @foreach (KeyValuePair<string, string> property in claim.Properties)
+                        {
+                            <div>@property.Key: @property.Value</div>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

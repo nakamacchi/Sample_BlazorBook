@@ -1,0 +1,1 @@
+"c:\Program Files\IIS Express\iisexpress" /path:C:\Users\<username>\source\repos\BlazorApp1\BlazorApp1\bin\Release\net8.0\browser-wasm\publish

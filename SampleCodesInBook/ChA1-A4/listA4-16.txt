@@ -1,0 +1,11 @@
+var name = "Nobuyuki";
+var date = DateTime.Now;
+
+// 従来は以下のように書いていたが...
+string s1 = string.Format("こんにちは、{0}さん! 今日は {1}, 現在は {2:HH:mm} です。", name, date.DayOfWeek, date);
+
+// 以下のように記述できる
+string s2 = $"こんにちは、{name}さん! 今日は {date.DayOfWeek}, 現在は {date:HH:mm} です。";
+
+// 出力はいずれも以下のようになる
+// こんにちは、Nobuyukiさん! 今日は Tuesday, 現在は 22:27 です。

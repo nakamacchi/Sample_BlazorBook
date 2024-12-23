@@ -1,0 +1,21 @@
+global using Microsoft.AspNetCore.Components.Web;
+global using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+
+
+
+@using System.Net.Http
+@using System.Net.Http.Json
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.JSInterop
+@using AzRefArc.AspNetBlazorUnited
+@using AzRefArc.AspNetBlazorUnited.Client
+@using AzRefArc.AspNetBlazorUnited.Components
+
+@using AzRefArc.AspNetBlazorUnited.Client.Data
+@using AzRefArc.AspNetBlazorUnited.Client.Components
+
+@using static AzRefArc.AspNetBlazorUnited.Client.CustomRenderingMode
+

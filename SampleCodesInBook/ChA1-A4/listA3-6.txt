@@ -1,0 +1,16 @@
+{
+  "AzureAd": {
+    "Instance": "https://login.microsoftonline.com/",
+    "Domain": "blazorsample1234.onmicrosoft.com",
+    "TenantId": "2d5340ac-f9ba-404a-9291-4968b7403068",
+    "ClientId": "5694e9ce-15a1-493c-b8d5-93a2d8b8bfd6",
+    "CallbackPath": "/signin-oidc"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*"
+}

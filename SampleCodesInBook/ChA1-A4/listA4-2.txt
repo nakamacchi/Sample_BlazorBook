@@ -1,0 +1,14 @@
+<input type="text" @bind-value="Name" placeholder="名前を入力してください" />
+<button @onclick="btnGetMessage_Click">メッセージ取得</button>
+<p>メッセージ : @Message</p>
+
+@code
+{
+    private string Name { get; set; } = "";
+    private string Message { get; set; } = "";
+
+    private void btnGetMessage_Click()
+    {
+        Message = "Hello World " + Name + " !!";
+    }
+}

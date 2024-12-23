@@ -1,0 +1,15 @@
+// null 許容参照型として定義していない変数に null を入れようとすると、コンパイル時点で警告される
+string a = null;
+
+// null 許容していない参照型の場合は特に警告されない
+string b = "abc";
+Console.WriteLine(b.Length);
+
+// null 値が入る可能性がある場合には、変数を null 許容参照型として定義しなければならない
+string? c = new Random().NextDouble() < 0.5 ? "abc" : null;
+
+// null 値が入る可能性がある変数を処理する場合には、事前の null チェックが必要
+if (c != null) Console.WriteLine(c.Length);
+
+// null 値が入る可能性がある変数を処理する場合に 事前 null チェックを怠ると、コンパイル時点で警告される
+Console.WriteLine(c.Length);

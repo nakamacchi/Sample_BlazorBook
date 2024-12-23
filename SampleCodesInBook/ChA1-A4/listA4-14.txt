@@ -1,0 +1,9 @@
+using (var pubs = dbFactory.CreateDbContext())
+{
+    authors = await pubs.Authors.ToListAsync();
+}
+
+↓
+
+using var pubs = dbFactory.CreateDbContext();
+authors = await pubs.Authors.ToListAsync();

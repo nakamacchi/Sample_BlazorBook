@@ -1,0 +1,19 @@
+...(前略)...
+
+// 認証サービスの追加 (Windows 統合認証)
+builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.Negotiate.NegotiateDefaults.AuthenticationScheme)
+   .AddNegotiate();
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = options.DefaultPolicy;
+});
+
+var app = builder.Build();
+...(中略)...
+app.UseAntiforgery();
+
+// 認証サービスの追加 (Windows 統合認証)
+app.UseAuthentication();
+app.UseAuthorization();
+
+...(後略)…

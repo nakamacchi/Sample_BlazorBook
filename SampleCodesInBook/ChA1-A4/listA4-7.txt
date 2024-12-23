@@ -1,0 +1,19 @@
+@code {
+    List<Author>? authors { get; set; } = new List<Author>();
+
+    [Inject]
+    public HttpClient? httpClient { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (httpClient != null)
+        {
+            authors = await httpClient.GetFromJsonAsync<List<Author>>("/api/GetAuthors")!;
+        }
+
+
+
+        authors = await httpClient!.GetFromJsonAsync<List<Author>>("/api/GetAuthors")!;
+    }
+}
+

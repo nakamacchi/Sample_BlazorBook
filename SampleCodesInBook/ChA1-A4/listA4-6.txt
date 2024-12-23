@@ -1,0 +1,9 @@
+正しい実装方法 ： null 非許容の参照型として定義し、ダミーで null 値を割り当て、コンパイル警告を抑止する
+
+[Inject]
+public HttpClient httpClient { get; set; } = null!;
+[Inject]
+public NavigationManager nav { get; set; } = null!;
+[Inject]
+public Ilogger logger { get; set; } = null!;
+

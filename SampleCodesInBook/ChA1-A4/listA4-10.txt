@@ -1,0 +1,15 @@
+■ null 条件演算子と null 合体演算子を組み合わせたコードの例
+
+string? requestId = Activity.Current?.Id ?? HttpContext?.TraceIdentifier;
+
+■ 従来のコードに展開した例
+
+string? requestId = null;
+if (Activity.Current != null)
+{
+    requestId = Activity.Current.Id;
+}
+else if (HttpContext != null)
+{
+    requestId = HttpContext.TraceIdentifier;
+}

@@ -1,0 +1,17 @@
+■ @ ディレクティブによるサービス受け取り
+
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+@inject ILogger logger
+
+■ [Inject] 属性つきプロパティによるサービス受け取り
+
+@code
+{
+    [Inject]
+    public HttpClient httpClient { get; set; }
+    [Inject]
+    public NavigationManager nav { get; set; }
+    [Inject]
+    public ILogger logger { get; set; }
+}

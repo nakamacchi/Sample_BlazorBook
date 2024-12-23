@@ -1,0 +1,25 @@
+■ null 条件演算子 (?.)（null だった場合のみ処理を行う機能）
+
+<AuthorizeView>
+    Hello @context.User.Identity?.Name
+</AuthorizeView>
+
+■ null 合体演算子 (??)（null だった場合の代替処理を記述できる機能）
+
+// 例1. 構成設定が正しく書かれていなかった場合には処理を停止する
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+// 例2. コンストラクタインジェクションでインスタンスが渡されなかった場合には処理を停止する
+public class InteractiveAutoListAuthorsServiceClientImpl : IInteractiveAutoListAuthorsService
+{
+    private HttpClient httpClient { get; set; }
+    private ILogger<InteractiveAutoListAuthorsServiceClientImpl> logger { get; set; }
+
+    public InteractiveAutoListAuthorsServiceClientImpl(HttpClient httpClient, ILogger<InteractiveAutoListAuthorsServiceClientImpl> logger)
+    {
+        this.httpClient = httpClient ?? throw new InvalidOperationException("httpClient");
+        this.logger = logger ?? throw new InvalidOperationException("logger");
+    }
+}
+
+
