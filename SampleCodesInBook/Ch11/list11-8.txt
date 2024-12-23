@@ -1,0 +1,26 @@
+public static class CustomRenderingMode
+{
+    public static InteractiveServerRenderMode InteractiveServer { get; } = new();
+    public static InteractiveWebAssemblyRenderMode InteractiveWebAssembly { get; } = new();
+    public static InteractiveAutoRenderMode InteractiveAuto { get; } = new();
+    public static InteractiveServerRenderMode InteractiveServerWithoutPrerendering { get; } = new(prerender: false);
+    public static InteractiveWebAssemblyRenderMode InteractiveWebAssemblyWithoutPrerendering { get; } = new(prerender: false);
+    public static InteractiveAutoRenderMode InteractiveAutoWithoutPrerendering { get; } = new(prerender: false);
+}
+
+
+
+
+@using static BlazorApp1.Client.CustomRenderingMode
+
+
+
+
+@page "/counter"
+@rendermode InteractiveWebAssemblyWithoutPrerendering
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+...
+

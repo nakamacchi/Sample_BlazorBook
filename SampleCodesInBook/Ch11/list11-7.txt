@@ -1,0 +1,5 @@
+@page "/counter"
+@attribute [RenderModeInteractiveWebAssembly(false)]
+
+<PageTitle>Counter</PageTitle>
+...

@@ -1,0 +1,5 @@
+@page "/counter"
+@attribute [RenderModeInteractiveServer(false)]
+
+<PageTitle>Counter</PageTitle>
+...

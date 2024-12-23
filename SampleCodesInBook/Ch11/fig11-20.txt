@@ -1,0 +1,14 @@
+@page "/ServerWASMpage.razor"
+
+@inject IDbContextFactory<PubsDbContext> dbContextFactory
+@inject IHttpClientFactory httpClientFactory
+
+@code
+{
+    if (OperatingSystem.IsBrowser() == true) {
+        // httpClientFactory を利用
+    } else {
+        // dbContextFactory を利用
+    }
+}
+

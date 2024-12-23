@@ -1,0 +1,21 @@
+
+<hr />
+<p role="status">Current count: @currentCount</p>
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<p>このコンポーネントは現在 @(OperatingSystem.IsBrowser() ? "WASM" : "Server") で動作しています。</p>
+
+<hr />
+@code {
+    private int currentCount = 0;
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}
+
+
+
+@page "/"
+...
+<BlazorApp1.Client.Pages.CounterComponent @rendermode="@(new InteractiveWebAssemblyRenderMode(false))" />
+<BlazorApp1.Client.Pages.CounterComponent @rendermode="@(new InteractiveServerRenderMode(false))" />

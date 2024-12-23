@@ -1,0 +1,4 @@
+@page "/BizGroupA/ShowAllAuthors/ListAuthors"
+
+<PageTitle>著者データ一覧</PageTitle>
+...

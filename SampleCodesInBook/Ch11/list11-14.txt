@@ -1,0 +1,17 @@
+@rendermode InteractiveWebAssembly
+
+@if (Authors == null) { … } 
+else
+{
+    <div class="table-responsive">
+        <QuickGrid Items="@Authors.AsQueryable()" Pagination="@paginationState">
+           ...
+        </QuickGrid>
+        <Paginator State="@paginationState" />
+    </div>
+}
+@code {
+    [Parameter]
+    public List<Author>? Authors { get; set; }
+    PaginationState paginationState = new PaginationState { ItemsPerPage = 10 };
+}

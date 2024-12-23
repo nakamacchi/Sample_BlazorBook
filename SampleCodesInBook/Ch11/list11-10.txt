@@ -1,0 +1,29 @@
+public class InteractiveAutoListAuthorsServiceServerImpl : IInteractiveAutoListAuthorsService
+{
+    private IDbContextFactory<PubsDbContext> dbContextFactory { get; set; }
+    private ILogger<InteractiveAutoListAuthorsServiceClientImpl> logger { get; set; }
+
+    public InteractiveAutoListAuthorsServiceServerImpl(IDbContextFactory<PubsDbContext> dbContextFactory, ILogger<InteractiveAutoListAuthorsServiceClientImpl> logger)
+    {
+        this.dbContextFactory = dbContextFactory;
+        this.logger = logger;
+    }
+
+    public async Task<List<Author>> GetAuthorsAsync()
+    {
+        using (var pubs = dbContextFactory.CreateDbContext())
+        {
+            return await pubs.Authors.ToListAsync();
+        }
+    }
+}
+
+
+
+var builder = WebApplication.CreateBuilder(args);
+...
+// アプリサービスの追加(サーバ用)
+builder.Services.AddScoped(typeof(IInteractiveAutoListAuthorsService), typeof(InteractiveAutoListAuthorsServiceServerImpl));
+var app = builder.Build();
+...
+

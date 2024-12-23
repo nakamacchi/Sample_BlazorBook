@@ -1,0 +1,7 @@
+@page "/counter"
+@attribute [RenderModeInteractiveWebAssembly(prerender: true)]
+
+
+
+@page "/counter"
+@rendermode InteractiveWebAssembly

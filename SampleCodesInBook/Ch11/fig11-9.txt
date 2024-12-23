@@ -1,0 +1,13 @@
+@page "/weather"
+@attribute [RenderModeInteractiveServer]
+
+<PageTitle>Weather</PageTitle>
+...
+
+
+
+@page "/ weather "
+@rendermode InteractiveServer
+
+<PageTitle>Weather</PageTitle>
+...

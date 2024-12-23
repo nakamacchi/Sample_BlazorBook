@@ -1,0 +1,26 @@
+@page "/BizGroupA/ShowAllAuthors/ListAuthors"
+@attribute [StreamRendering(true)]
+
+<PageTitle>著者データ一覧</PageTitle>
+...
+@if (authors == null) {
+    <p><em>現在データを取得中です...</em></p>
+} else if (authors.Count == 0) {
+    <p><em>データが一件もありません。</em></p>
+} else {
+    <div class="table-responsive">
+        <table class="table table-condensed table-striped table-hover"> ...
+        </table>
+    </div>
+}
+
+@code {
+    private List<AuthorOverview>? authors { get; set; } = new List<AuthorOverview>();
+
+    protected override async Task OnInitializedAsync() {
+        authors = null;
+        await Task.Delay(2000);
+        using (var pubs = dbFactory.CreateDbContext()) ...
+    }
+}
+
