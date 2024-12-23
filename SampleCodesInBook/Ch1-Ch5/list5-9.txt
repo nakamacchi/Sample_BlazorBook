@@ -1,0 +1,5 @@
+var builder = WebApplication.CreateBuilder();
+builder.Logging.AddEventLog(eventLogSettings =>
+{
+    eventLogSettings.SourceName = "MyLogs";
+});

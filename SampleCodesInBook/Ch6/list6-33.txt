@@ -1,0 +1,31 @@
+[HttpGet]
+public ActionResult List()
+{
+    List<AuthorOverview> result;
+    using (PubsDbContext pubs = new PubsDbContext())
+    {
+        var query = from a in pubs.Authors select a;
+        result = query.ToList();
+    }
+    System.IO.File.AppendAllText(@"c:\temp\sample.txt", "ログデータ");
+    ViewData["Authors"] = result;
+    return View();
+}
+
+
+
+[HttpGet]
+public async Task<ActionResult> List()
+{
+    List<AuthorOverview> result;
+    await using (PubsDbContext pubs = new PubsDbContext())
+    {
+        var query = from a in pubs.Authors select a;
+        result = await query.ToListAsync();
+    }
+    await Task.Run(() => {
+        System.IO.File.AppendAllText(@"c:\temp\sample.txt", "ログデータ");
+    });
+    ViewData["Authors"] = result;
+    return View();
+}

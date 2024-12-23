@@ -1,0 +1,15 @@
+using (PubsDbContext pubs = new PubsDbContext()){
+    var query = from t in pubs.Titles
+                where t.Price > 3.0M
+                select t;
+    foreach (var t in query.ToList()){
+        pubs.Entry(t).Reference(t => t.Publisher).Load();
+        pubs.Entry(t).Collection(t => t.TitleAuthors).Load();
+        Console.WriteLine("{0} : {1} ({2})", t.TitleId, t.TitleName, t.Publisher.PublisherName);
+        foreach (var ta in t.TitleAuthors){
+            pubs.Entry(ta).Reference(ta => ta.Author).Load();
+
+            Console.WriteLine("\t{0}", ta.Author.AuthorFirstName + " " + ta.Author.AuthorLastName);
+        }
+    }
+}

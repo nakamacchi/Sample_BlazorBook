@@ -1,0 +1,3 @@
+@inject IConfiguration config
+<p>@config["LOGGING:LOGLEVEL:DEFAULT"]</p>
+<p>@config["AppSettings:AcceptFiles:1"]</p>

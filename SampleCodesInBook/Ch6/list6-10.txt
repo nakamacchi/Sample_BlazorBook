@@ -1,0 +1,10 @@
+using (PubsDbContext pubs = new PubsDbContext())
+{
+    var query = pubs.Stores.Select(st => new
+    {
+        st.StoreId,
+        st.StoreName,
+        TotalSales = st.Sales.Sum(sl => sl.Title.Price * sl.Quantity)
+    });
+    foreach (var s in query.ToList()) Console.WriteLine(s);
+}

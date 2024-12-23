@@ -1,0 +1,38 @@
+public partial class PubsDbContext : DbContext
+{
+    public PubsDbContext(DbContextOptions<PubsDbContext> options) : base(options)
+    {
+    }
+    ...
+}
+
+
+
+builder.Services.AddDbContextFactory<PubsDbContext>(opt => {
+    if (builder.Environment.IsDevelopment()) {
+        opt = opt.EnableSensitiveDataLogging().EnableDetailedErrors();
+    }
+    opt.UseSqlServer(
+        builder.Configuration.GetConnectionString("PubsDbContext"),
+        providerOptions =>
+        {
+            providerOptions.EnableRetryOnFailure();
+        });
+});
+
+
+
+@code {
+    [Inject]
+    public IDbContextFactory<PubsDbContext> dbFactory { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using (var pubs = dbFactory.CreateDbContext())
+        {
+            var query = ...
+        }
+    }
+}
+
+

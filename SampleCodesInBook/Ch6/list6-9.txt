@@ -1,0 +1,18 @@
+var query = from a in pubs.Authors
+            where a.State == "CA"
+            select new AuthorOverview() {
+                AuthorId = a.AuthorId,
+                AuthorName = a.AuthorFirstName + " " + a.AuthorLastName,
+                Phone = a.Phone,
+                State = a.State
+            };
+
+
+var query = pubs.Authors
+            .Where(a => a.State == "CA")
+            .Select(a => new AuthorOverview() {
+                AuthorId = a.AuthorId,
+                AuthorName = a.AuthorFirstName + " " + a.AuthorLastName,
+                Phone = a.Phone,
+                State = a.State
+            });

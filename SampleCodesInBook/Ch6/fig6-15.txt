@@ -1,0 +1,9 @@
+public partial class Author
+{
+    public string AuId { get; set; }
+    public string AuLname { get; set; }
+    public string AuFname { get; set; }
+    public string Phone { get; set; }
+    ...
+    public virtual ICollection<Titleauthor> Titleauthors { get; set; }
+}

@@ -1,0 +1,15 @@
+using (PubsDbContext pubs = new PubsDbContext())
+{
+    var query = from a in pubs.Authors
+                where a.State == "CA"
+                select new AuthorOverview() {
+                    AuthorId = a.AuthorId,
+                    AuthorName = a.AuthorFirstName + " " + a.AuthorLastName,
+                    Phone = a.Phone, State = a.State
+                };
+    List<AuthorOverview> result1 = query.ToList(); // クエリを実行し、結果を List コレクションで取得
+
+    // 結果表示
+    foreach (AuthorOverview a in result1) 
+		Console.WriteLine("{0}: {1} {2}", a.AuthorId, a.AuthorName, a.State);
+}

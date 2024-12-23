@@ -1,0 +1,30 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*"
+}
+
+
+
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Error"
+    },
+    "Console": {
+      "LogLevel": {
+        "Microsoft.AspNetCore.Mvc.Razor.Internal": "Warning",
+        "Default": "Information"
+      }
+    },
+    "EventLog": {
+      "LogLevel": {
+        "Microsoft": "Information"
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+Author targetAuthor;
+
+// あるコンテキスト内でデータを取り出してから...
+using (PubsDbContext pubs1 = new PubsDbContext())
+{
+    targetAuthor = pubs1.Authors.Where(a => a.AuthorId == "172-32-1176").FirstOrDefault();
+}
+
+// データを更新し...
+targetAuthor.AuthorFirstName = "Nobuyuki";
+targetAuthor.AuthorLastName = "Akama";
+
+// 別コンテキスト内でデータを更新する場合には、アタッチ処理が必要
+using (PubsDbContext pubs2 = new PubsDbContext())
+{
+    pubs2.Entry(targetAuthor).State = Microsoft.Data.Entity.EntityState.Modified;
+    pubs2.SaveChanges();
+}

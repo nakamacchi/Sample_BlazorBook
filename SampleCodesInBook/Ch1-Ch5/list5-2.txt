@@ -1,0 +1,6 @@
+app.Use(async (context, next) =>
+{
+    Console.WriteLine("前処理");
+    await next.Invoke();
+    Console.WriteLine("後処理");
+});

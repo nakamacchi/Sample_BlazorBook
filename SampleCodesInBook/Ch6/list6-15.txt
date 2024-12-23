@@ -1,0 +1,24 @@
+using (PubsDbContext pubs = new PubsDbContext())
+{
+    // データ更新
+    var a1 = pubs.Authors.Where(a => a.AuthorId == "172-32-1176").FirstOrDefault();
+    a1.AuthorFirstName = "Nobuyuki";
+    a1.AuthorLastName = "Akama";
+
+    // データ削除
+    var a2 = pubs.Authors.Where(a => a.AuthorId == "341-22-1782").FirstOrDefault();
+    pubs.Authors.Remove(a2);
+
+    // データ追加
+    var a3 = new Author() { AuthorId = "123-45-6789", AuthorFirstName = "Tetsuya", AuthorLastName = "Komuro", Phone = "123 456-7890", Contract = true };
+    pubs.Authors.Add(a3);
+
+    try
+    {
+        pubs.SaveChanges();
+    }
+    catch (Microsoft.EntityFrameworkCore.DbUpdateException)
+    {
+        Console.WriteLine("例外発生");
+    }
+}

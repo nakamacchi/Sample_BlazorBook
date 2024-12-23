@@ -1,0 +1,29 @@
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+var app = builder.Build();
+…
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseAntiforgery();
+app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
+app.Run();
+
+
+<!DOCTYPE html>
+<html lang="en"> ..
+<head> ..
+    <HeadOutlet @rendermode="@RenderMode.InteractiveServer" />
+</head>
+<body>
+    <Routes @rendermode="@RenderMode.InteractiveServer" />
+    <script src="_framework/blazor.web.js"></script>
+</body>
+</html>
+
+
+<Router AppAssembly="@typeof(Program).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(Layout.MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+</Router>

@@ -1,0 +1,18 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "ConnectionStrings": {
+    "PubsDbContext": "Server=..."
+  }
+}
+
+
+
+@inject IConfiguration config
+↓
+config.GetConnectionString("PubsDbContext")

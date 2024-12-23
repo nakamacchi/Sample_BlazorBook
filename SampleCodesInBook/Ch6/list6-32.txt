@@ -1,0 +1,13 @@
+await using (PubsDbContext pubs = new PubsDbContext())
+{
+    var query1 = from a in pubs.Authors where a.State == "CA" select a;
+    List<Author> result1 = await query1.ToListAsync();
+
+    var query2 = from a in pubs.Authors where a.AuthorId == "172-32-1176" select a;
+    Author result2 = await query2.FirstOrDefaultAsync();
+
+    result2.AuthorFirstName = "Nobuyuki";
+    result2.AuthorLastName = "Akama";
+
+    await pubs.SaveChangesAsync();
+}

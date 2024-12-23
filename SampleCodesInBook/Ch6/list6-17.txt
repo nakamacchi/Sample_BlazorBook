@@ -1,0 +1,17 @@
+Author targetAuthor;
+
+using (PubsDbContext pubs1 = new PubsDbContext()) {
+    targetAuthor = pubs1.Authors.Where(a => a.AuthorId == "172-32-1176").FirstOrDefault();
+}
+
+targetAuthor.AuthorFirstName = "Nobuyuki";
+targetAuthor.AuthorLastName = "Akama";
+
+using (PubsDbContext pubs2 = new PubsDbContext()) {
+    pubs2.Entry(targetAuthor).State = Microsoft.Data.Entity.EntityState.Modified;
+    try {
+        pubs2.SaveChanges();
+    } catch (DbUpdateConcurrencyException) {
+        Console.WriteLine("他のユーザにより更新されています。最初からやり直してください。");
+    }
+}

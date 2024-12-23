@@ -1,0 +1,6 @@
+var authorsInCA = pubs.Authors.Where(a => a.State == "CA");
+foreach (var a in authorsInCA) a.Contract = true;
+pubs.SaveChanges();
+
+pubs.Database.ExecuteSqlCommand(
+	"UPDATE authors SET contract={0} WHERE state={1}", true, "CA");

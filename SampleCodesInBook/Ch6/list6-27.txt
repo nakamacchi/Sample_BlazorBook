@@ -1,0 +1,11 @@
+using (PubsDbContext pubs = new PubsDbContext())
+{
+    using (var tx = pubs.Database.BeginTransaction(System.Data.IsolationLevel.Serializable))
+    {
+        Title t = pubs.Titles.FromSql("SELECT * FROM titles WITH (UPDLOCK) WHERE title_id={0}", "BU1032")
+                             .FirstOrDefault();
+        t.Price = t.Price + 1;
+        pubs.SaveChanges();
+        tx.Commit();
+    }
+}

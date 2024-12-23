@@ -1,0 +1,13 @@
+using (PubsDbContext pubs = new PubsDbContext())
+{
+    var authorsInCA = pubs.Authors.Where(a => a.State == "CA");
+    foreach (var a in authorsInCA) a.Contract = !a.Contract;
+    try
+    {
+        pubs.SaveChanges();
+    }
+    catch (Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException)
+    {
+        Console.WriteLine("楽観同時実行制御違反発生");
+    }
+}

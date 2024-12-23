@@ -1,0 +1,13 @@
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+@inject ILogger logger
+※ または以下を記述
+@code
+{
+    [Inject]
+    public HttpClient httpClient { get; set; } = null!;
+    [Inject]
+    public NavigationManager nav { get; set; } = null!;
+    [Inject]
+    public ILogger logger { get; set; } = null!;
+}

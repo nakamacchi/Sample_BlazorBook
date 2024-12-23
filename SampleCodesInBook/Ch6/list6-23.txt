@@ -1,0 +1,16 @@
+using (PubsDbContext pubs = new PubsDbContext())
+{
+    try{
+        // データ一括更新
+        pubs.Titles.Where(a => a.Type == "business").ExecuteUpdate(s => 
+            s.SetProperty(title => title.Price, title => title.Price + 3)
+        );
+     
+        // データ一括削除
+        pubs.Titles.Where(a => a.Type == "UNDECIDED").ExecuteDelete();
+    }
+    catch (Microsoft.EntityFrameworkCore.DbUpdateException)
+    {
+        Console.WriteLine("例外発生");
+    }
+}

@@ -1,0 +1,16 @@
+public partial class PubsDbContext : DbContext
+{
+    protected override void OnConfiguring(DbContextOptionsBuilder options)
+    {
+        options.UseSqlServer("接続文字列を記述");
+    }
+    ...
+}
+
+
+
+using (PubsDbContext pubs = new PubsDbContext())
+{
+   var query = from a in pubs.Authors select a;
+}
+

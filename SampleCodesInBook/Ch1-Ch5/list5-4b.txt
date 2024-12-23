@@ -1,0 +1,22 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning"
+    }
+  },
+  "AppSettings": {
+    "PageSize": "30",
+    "AcceptFiles": [ "jpg", "png", "bmp" ]
+  }
+}
+
+
+
+SET LOGGING__LOGLEVEL__DEFAULT=Debug
+SET LOGGING__LOGLEVEL__MICROSOFT.ASPNETCORE=Information
+
+SET APPSETTINGS__PAGESIZE=30
+SET APPSETTINGS__ACCEPTFILES__0=jpg
+SET APPSETTINGS__ACCEPTFILES__1=png
+SET APPSETTINGS__ACCEPTFILES__2=bmp

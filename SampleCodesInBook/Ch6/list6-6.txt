@@ -1,0 +1,15 @@
+public partial class PubsDbContext : DbContext
+{
+    ...
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // 複合 PK の指定
+        modelBuilder.Entity<Sale>().Key(s => new { s.StoreId, s.OrderNumber, s.TitleId });
+        // リレーションシップ ※ 命名規約からずれているなど手作業で指定する必要がある場合
+        modelBuilder.Entity<Sale>().HasOne(s => s.Title).WithMany(t => t.Sales).IsRequired();
+        modelBuilder.Entity<Sale>().HasOne(s => s.Store).WithMany(s => s.Sales).IsRequired();
+        modelBuilder.Entity<Publisher>().HasMany(p => p.Titles).WithOne(t => t.Publisher).IsRequired();
+        modelBuilder.Entity<Author>().HasMany(a => a.TitleAuthors).WithOne(ta => ta.Author).IsRequired();
+        modelBuilder.Entity<Title>().HasMany(t => t.TitleAuthors).WithOne(ta => ta.Title).IsRequired();
+    }
+}

@@ -1,0 +1,11 @@
+@inject ILogger<Counter> logger
+ 
+@code {
+    private int currentCount = 0;
+ 
+    private void IncrementCount()
+    {
+        currentCount++;
+        logger.LogWarning("currentCount = {0}", currentCount);
+    }
+}

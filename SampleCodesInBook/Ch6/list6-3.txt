@@ -1,0 +1,1 @@
+dotnet ef dbcontext scaffold "<ConnectionString>” Microsoft.EntityFrameworkCore.SqlServer -c PubsContext -o Models

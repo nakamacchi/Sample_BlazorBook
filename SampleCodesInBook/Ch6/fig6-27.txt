@@ -1,0 +1,16 @@
+[Table("authors")]
+public partial class Author
+{
+    [Column("au_id"), Required, MaxLength(11), Key]
+    public string AuthorId { get; set; }
+
+    [Column("au_fname"), Required, MaxLength(20)]
+    public string AuthorFirstName { get; set; }
+    ...
+
+    [Column("contract"), Required]
+    public bool Contract { get; set; }
+
+    [Column("rowversion"), Timestamp]
+    public byte[] RowVersion { get; set; }
+}

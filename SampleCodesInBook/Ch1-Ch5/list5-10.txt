@@ -1,0 +1,4 @@
+logger.LogWarning("ログメッセージ");
+logger.LogWarning(exceptionObject, "ログメッセージ");
+logger.LogWarning(MyLogEvents.TestItem, "ログメッセージ");
+logger.LogWarning(MyLogEvents.TestItem,exceptionObject, "ログメッセージ");

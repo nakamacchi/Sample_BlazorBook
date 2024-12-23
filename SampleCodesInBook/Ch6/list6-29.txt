@@ -1,0 +1,13 @@
+using (PubsDbContext pubs = new PubsDbContext())
+{
+    using (var tx = pubs.Database.BeginTransaction(System.Data.IsolationLevel.Serializable))
+    {
+        var a1 = pubs.Authors
+           .FromSqlRaw("SELECT * FROM authors WITH (UPDLOCK) WHERE au_id={0}", "172-32-1176")
+           .FirstOrDefault();
+        a1.AuthorFirstName = "Nobuyuki";
+        a1.AuthorLastName = "Akama";
+        pubs.SaveChanges();
+        tx.Commit();
+    }
+}

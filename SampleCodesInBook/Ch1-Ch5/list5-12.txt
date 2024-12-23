@@ -1,0 +1,26 @@
+public class MyLogEvents
+{
+    public const int GenerateItems      = 1000;
+    public const int ListItems          = 1001;
+    public const int GetItem            = 1002;
+    public const int InsertItem         = 1003;
+    public const int UpdateItem         = 1004;
+    public const int DeleteItem         = 1005;
+    public const int TestItem           = 3000;
+    public const int GetItemNotFound    = 4000;
+    public const int UpdateItemNotFound = 4001;
+}
+
+
+
+// イベント ID の指定
+logger.LogInformation(MyLogEvents.GetItem, "Getting item {0}", id);
+logger.LogWarning(MyLogEvents.GetItemNotFound, "Get({0}) NOT FOUND", id);
+
+// カテゴリ名を自力で指定したい場合には...
+[Inject]
+public ILoggerFactory loggerFactory { get; set; }
+
+var _logger = loggerFactory.CreateLogger("テストカテゴリ");
+_logger.LogInformation("テスト");
+

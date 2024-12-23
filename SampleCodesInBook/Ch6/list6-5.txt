@@ -1,0 +1,33 @@
+[Table("authors")]
+public class Author
+{
+    [Column("au_id"), Required, MaxLength(11), Key]
+    public string AuthorId { get; set; }
+
+    [Column("au_fname"), Required, MaxLength(20)]
+    public string AuthorFirstName { get; set; }
+
+    [Column("au_lname"), Required, MaxLength(40)]
+    public string AuthorLastName { get; set; }
+
+    [Column("phone"), Required, MaxLength(12)]
+    public string Phone { get; set; }
+…
+}
+
+
+public class PubsDbContext : DbContext
+{
+    public DbSet<Author> Authors { get; set; }
+    public DbSet<Title> Titles { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder options)
+    {
+        options.UseSqlServer(@"接続文字列を記述する");
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // Fluent API を記述
+    }
+}

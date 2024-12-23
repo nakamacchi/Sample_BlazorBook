@@ -1,0 +1,15 @@
+using (PubsDbContext pubs = new PubsDbContext())
+{
+    // n 件データ取得
+    var query1 = from a in pubs.Authors where a.State == "CA" select a;
+    List<Author> result1 = query1.ToList(); // クエリを実行し、結果を List コレクションで取得
+
+    // 1 件データ取得
+    var query2 = from a in pubs.Authors where a.AuthorId == "172-32-1176" select a;
+    Author result2 = query2.FirstOrDefault(); // クエリを実行し、結果を POCO オブジェクトで取得
+
+    // 結果表示
+    foreach (Author a in result1) Console.WriteLine("{0}: {1} {2}", 
+				a.AuthorId, a.AuthorFirstName, a.AuthorLastName);
+    Console.WriteLine("{0}: {1} {2}", result2.AuthorId, result2.AuthorFirstName, result2.AuthorLastName);
+}

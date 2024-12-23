@@ -1,0 +1,7 @@
+builder.Services.AddDbContextFactory<PubsDbContext>(opt => {
+    opt.UseSqlServer(
+        builder.Configuration.GetConnectionString("PubsDbContext"),
+        providerOptions => {
+            providerOptions.EnableRetryOnFailure();
+        });
+});

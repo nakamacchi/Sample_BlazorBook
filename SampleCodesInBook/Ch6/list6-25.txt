@@ -1,0 +1,22 @@
+using (PubsDbContext pubs = new PubsDbContext())
+{
+    var state = "CA";
+    var contract = true;
+    var query = pubs.Authors
+        .FromSql<Author>($"SELECT * FROM authors WHERE state={state} AND contract={contract}");
+    List<Author> result1 = query.ToList(); // クエリを実行し、結果を List コレクションで取得
+
+    foreach (var a in result1) Console.WriteLine(a.AuthorId);
+}
+
+
+
+using (PubsDbContext pubs = new PubsDbContext())
+{
+    var query = pubs.Authors
+               .FromSqlRaw<Author>("SELECT * FROM authors WHERE state={0} AND contract={1}", "CA", true);
+    List<Author> result1 = query.ToList(); // クエリを実行し、結果を List コレクションで取得
+
+    foreach (var a in result1) Console.WriteLine(a.AuthorId);
+}
+
