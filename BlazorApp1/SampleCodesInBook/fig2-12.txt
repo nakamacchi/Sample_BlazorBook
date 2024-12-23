@@ -1,0 +1,14 @@
+<button @onclick='() => btnGetMessage_Click("Hello World ①")'>メッセージ取得①</button>
+<button @onclick='() => btnGetMessage_Click("Hello World ②")'>メッセージ取得②</button>
+<button @onclick='() => btnGetMessage_Click("Hello World ③")'>メッセージ取得③</button>
+
+<p>メッセージ : @Message</p>
+
+@code
+{
+    private string Message { get; set; } = "";
+
+    private void btnGetMessage_Click(string message) {
+        Message = message;
+    }
+}

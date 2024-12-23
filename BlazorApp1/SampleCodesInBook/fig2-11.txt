@@ -1,0 +1,23 @@
+<button @onclick="btnGetMessage1_Click">メッセージ取得①</button>
+<button @onclick="btnGetMessage2_Click">メッセージ取得②</button>
+<button @onclick="btnGetMessage3_Click">メッセージ取得③</button>
+
+<button @onclick="@(() => Message = DateTime.Now.ToString())">メッセージ取得④</button>
+<button @onclick="@(e => Message = DateTime.Now.ToString())">メッセージ取得⑤</button>
+<p>メッセージ : @Message</p>
+
+@code
+{
+    private string Message { get; set; } = "";
+
+    private void btnGetMessage1_Click() {
+        Message = "Hello World " + DateTime.Now;
+    }
+    private void btnGetMessage2_Click(MouseEventArgs e) {
+        Message = "Hello World " + DateTime.Now + " " + e.ShiftKey;
+    }
+    private async Task btnGetMessage3_Click() { 
+        await Task.Delay(3000);
+        Message = "Hello World " + DateTime.Now;
+    }
+}

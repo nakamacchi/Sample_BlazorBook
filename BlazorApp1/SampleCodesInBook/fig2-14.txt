@@ -1,0 +1,10 @@
+<input type="text" @bind="age" placeholder="年齢を入力してください。" />
+<p>@age</p>
+
+<input type="text" @bind="name" placeholder="名前を入力してください。" />
+<p>@name</p>
+
+@code {
+    string age { get; set; } = "";
+    string name { get; set; } = "";
+}

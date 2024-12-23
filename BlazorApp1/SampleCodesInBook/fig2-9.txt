@@ -1,0 +1,10 @@
+<input type="text" @bind="name1" placeholder="名前を入力" />
+<p>@name1</p>
+
+<input type="text" @bind="name2" placeholder="名前を入力" @bind:event="oninput" />
+<p>@name2</p>
+
+@code {
+    string name1 { get; set; } = "";
+    string name2 { get; set; } = "Nobuyuki";
+}

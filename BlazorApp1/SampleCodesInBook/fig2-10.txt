@@ -1,0 +1,24 @@
+<input type="checkbox" @bind="isChecked" /> チェックボックス
+<p>@isChecked</p>
+
+@code {
+    bool isChecked { get; set; }
+}
+
+<select @bind="selectedKey">
+    @foreach(var item in list)
+    {
+        <option value="@item.Key">@item.Value</option>
+    }
+</select>
+<p>@selectedKey</p>
+
+@code {
+    string selectedKey = "";
+    Dictionary<string, string> list = new Dictionary<string, string>()
+    {
+        {"key1", "value1"},
+        {"key2", "value2"},
+        {"key3", "value3"}
+    };
+}

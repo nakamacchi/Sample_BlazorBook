@@ -1,0 +1,14 @@
+<p>現在時刻 : @DateTime.Now</p>
+<p>カウンター : @currentCount</p>
+
+<button @onclick="btnIncrement_Click">数値増加</button>
+
+
+@code {
+    int currentCount = 0;
+
+    private void btnIncrement_Click()
+    {
+        currentCount++;
+    }
+}

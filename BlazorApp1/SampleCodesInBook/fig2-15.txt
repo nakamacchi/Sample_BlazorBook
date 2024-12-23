@@ -1,0 +1,23 @@
+@if (authors == null)
+{
+    <div>現在データをロード中です。。。</div>
+}
+else
+{
+<div class="table-responsive">
+    <table class="table table-condensed table-striped table-hover">
+        <thead> ... </thead>
+        <tbody>
+            @foreach (var a in authors)
+                {
+                    <tr>
+                        <td>@a.AuthorId</td>
+                        <td>@a.AuthorName</td>
+                        <td>@a.Phone</td>
+                        <td>@a.State</td>
+                    </tr>
+                }
+        </tbody>
+    </table>
+</div>
+}

@@ -1,0 +1,30 @@
+@using System.Globalization
+
+<p>今日は @DateTime.Now です。</p>
+<p>今日は@(DateTime.Now)です。</p> @* スペースを空けたくない場合はカッコで括る *@
+<p>今日は @DateTime.Now.ToString("ggyy年MM月dd日(dddd)", dtf) です。</p> @* 和暦表示 *@
+<p>指数表記 : @a.ToString("E2")</p>
+<p>固定小数点表記 : @b.ToString("F3")</p>
+<p>ゼロパディンク : @c.ToString("D8")</p> @* 00001234 *@
+<p>16進数表記 : @("&H" + c.ToString("X4"))</p> @* &H04D2 *@
+<p>特殊な通貨表記 : @d.ToString("C", nfi)</p> @* 1,234円 *@
+
+@code {
+    double a = -123.4567d;
+    double b = -987.6543d;
+    int c = 1234;
+    decimal d = 1234m;
+    NumberFormatInfo nfi = new CultureInfo("ja-JP").NumberFormat;
+    DateTimeFormatInfo dtf = new CultureInfo("ja-JP").DateTimeFormat;
+
+    protected override void OnInitialized() // ページ初期化処理
+    {
+        nfi.CurrencyDecimalDigits = 0;                // 小数点以下表示桁数
+        nfi.CurrencyDecimalSeparator = ".";           // 小数点区切り子
+        nfi.CurrencyGroupSizes = new int[] { 3 };     // 区切り桁数
+        nfi.CurrencyGroupSeparator = ",";             // 桁区切り
+        nfi.CurrencySymbol = "円";
+        nfi.CurrencyPositivePattern = 1;              // 後ろに記号をつける
+        dtf.Calendar = new JapaneseCalendar();        // 西暦カレンダを利用する場合は GregorianCalendar
+    }
+}

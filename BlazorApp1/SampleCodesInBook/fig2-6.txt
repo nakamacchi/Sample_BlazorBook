@@ -1,0 +1,30 @@
+<select>
+    @if (sa != null) foreach (string item in sa)
+    {
+        <option value="@item">@item</option>
+    }
+</select>
+
+<dl>
+    @if (dic != null)
+    {
+        @foreach(KeyValuePair<string, string> item in dic)
+        {
+            <dt>@item.Key</dt>
+            <dd>@item.Value</dd>        
+        }
+    }
+</dl>
+
+@code {
+    string[] sa = ["Foo", "Bar", "Baz", "Qux"];
+    Dictionary<string, string> dic = new Dictionary<string, string>();
+
+    protected override void OnInitialized() // ページ初期化処理
+    {
+        dic.Add("001-999", "佐藤");
+        dic.Add("009-876", "鈴木");
+        dic.Add("008-345", "田中");
+        dic.Add("003-535", "赤間");
+    }
+}

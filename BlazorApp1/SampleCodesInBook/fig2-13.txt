@@ -1,0 +1,12 @@
+<select @bind="selectedKey" class="form-select-sm">
+    @if (states != null) foreach(var item in states)
+    {
+        <option value="@item.Key">@item.Value</option>
+    }
+</select>
+
+@code {
+    // ビューモデル
+    private string selectedKey = "";
+    private SortedDictionary<string, string> states = new SortedDictionary<string, string>();
+}
