@@ -1,0 +1,12 @@
+@code {
+    // データバインドに使用する変数
+    private IQueryable<Author>? authors = null;
+
+    // ページ初期化時に呼び出されるイベントハンドラ
+    protected override async Task OnInitializedAsync()
+    {
+        await using (var pubs = await DbFactory.CreateDbContextAsync()){
+            authors = (await pubs.Authors.ToListAsync()).AsQueryable();
+        }
+    }
+}

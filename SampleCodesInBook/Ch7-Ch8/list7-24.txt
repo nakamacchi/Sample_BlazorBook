@@ -1,0 +1,15 @@
+private async Task OnSelectButtonClicked(Author selectedAuthor)
+{
+   this.Message = $"{selectedAuthor.AuthorFirstName} {selectedAuthor.AuthorLastName} さんの情報は以下の通りです。";
+
+   await using (var pubs = await DbFactory.CreateDbContextAsync()){
+       Titles = (await pubs.Titles.Where(t => t.TitleAuthors
+           .Where(ta => ta.AuthorId == selectedAuthor.AuthorId).Count() > 0)
+           .Include(t => t.Publisher)
+           .ToListAsync()).AsQueryable();
+
+       AuthorToDisplay = await pubs.Authors
+           .Include(a => a.TitleAuthors)
+           .FirstOrDefaultAsync(a => a.AuthorId == selectedAuthor.AuthorId);
+   }
+} 

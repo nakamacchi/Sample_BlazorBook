@@ -1,0 +1,14 @@
+<QuickGrid Items="@authors">
+    <PropertyColumn Property="@(a => a.AuthorId)" Title="著者ID" Sortable="true" />
+    <TemplateColumn Title="著者名" 
+	Sortable="true" 
+	SortBy="@(GridSort<Author>.ByAscending(a => a.AuthorFirstName).ThenAscending(a => a.AuthorLastName))">
+                @(context.AuthorFirstName) @(context.AuthorLastName)
+    </TemplateColumn>
+    <PropertyColumn Property="@(a => a.Phone)" Title="電話番号" Sortable="true" />
+    <PropertyColumn Property="@(a => a.State)" Title="州" Sortable="true" />
+    <TemplateColumn Title="契約有無" Sortable="true" SortBy="@(GridSort<Author>.ByAscending(a => a.Contract))">
+        <input type="checkbox" disabled value="@(context.Contract)" />
+        @(context.Contract ? "契約あり" : "契約なし")
+    </TemplateColumn>
+</QuickGrid>

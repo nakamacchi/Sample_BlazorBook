@@ -1,0 +1,26 @@
+<h3>Sample11b : 楽観同時実行制御機能つきデータ更新</h3>
+<h5>著者データを修正してください。</h5>
+
+<EditForm Model="@vm" OnValidSubmit="@OnEditFormSubmitted">
+    <fieldset disabled="@isProcessing">
+        <DataAnnotationsValidator />
+        <dl>
+            <dt>著者 ID</dt>
+            <dd>@vm.AuthorId</dd>
+
+            <dt>著者名(名)</dt>
+            <dd><InputText @bind-Value="vm.AuthorFirstName" /></dd>
+
+            <dt>著者名(姓)</dt>
+            <dd><InputText @bind-Value="vm.AuthorLastName" /></dd>
+
+            <dt>電話番号</dt>
+            <dd><InputText @bind-Value="vm.Phone" /></dd>
+        </dl>
+
+        <button type="submit">更新</button>
+        <ValidationSummary />
+        <span>@concurrentUpdateErrorMessage</span>
+    </fieldset>
+    <button type="button" disabled="@cannotCancel" @onclick="OnCancelButtonClicked">キャンセル</button>
+</EditForm>

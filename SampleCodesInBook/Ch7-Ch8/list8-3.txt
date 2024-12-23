@@ -1,0 +1,6 @@
+public class ViewModel
+{
+    [Required(ErrorMessage = "件数を入力してください。")]
+    [RegularExpression(@"^[1-9]\d*$", ErrorMessage = "1以上の整数値を入力してください。")]
+    public string Count { get; set; } = "";
+}

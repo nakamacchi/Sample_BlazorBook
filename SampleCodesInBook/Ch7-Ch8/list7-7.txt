@@ -1,0 +1,19 @@
+<h3>Sample01 : 一覧表示</h3>
+
+@if (authors == null)
+{
+    <div>データロード中...</div>
+}
+else
+{
+    <div>
+        <QuickGrid Items="@authors">
+            <PropertyColumn Property="@(a => a.AuthorId)" Title="著者ID" />
+            <PropertyColumn Property="@(a => a.AuthorFirstName)" Title="著者(名)" />
+            <PropertyColumn Property="@(a => a.AuthorLastName)" Title="著者(姓)" />
+            <PropertyColumn Property="@(a => a.Phone)" Title="電話番号" />
+            <PropertyColumn Property="@(a => a.State)" Title="州" />
+            <PropertyColumn Property="@(a => a.Contract)" Title="契約有無" />
+        </QuickGrid>
+    </div>
+}

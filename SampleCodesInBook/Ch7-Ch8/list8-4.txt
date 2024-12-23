@@ -1,0 +1,15 @@
+<EditForm Model="@vm" OnValidSubmit="@OnEditFormSubmitted">
+
+    <fieldset disabled="@isProcessing">
+
+        <DataAnnotationsValidator />
+
+
+        <InputText @bind-Value="vm.Count" 
+	class="form-text" 
+	placeholder="表示する件数を入力してください" />
+        <button type="submit">表示</button>
+
+        <ValidationSummary />
+    </fieldset>
+</EditForm>

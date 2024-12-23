@@ -1,0 +1,4 @@
+private void OnSelectButtonClicked(Author selectedAuthor)
+{
+    NavigationManager.NavigateTo("Sample11b/" + selectedAuthor.AuthorId);
+}

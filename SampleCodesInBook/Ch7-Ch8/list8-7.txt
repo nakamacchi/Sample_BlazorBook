@@ -1,0 +1,20 @@
+private async Task OnEditFormSubmitted()
+{
+    if (isProcessing) return; // 処理中の場合はなにもせず復帰
+    try
+    {
+        isProcessing = true; // 処理中フラグを立てる
+
+        // 入力された件数を整数に変換。このパース処理が失敗することはないので TryParse() は不要
+        int count = int.Parse(vm.Count);
+
+        // データベースから count 数だけデータを取得
+        await using (var pubs = await DbFactory.CreateDbContextAsync()){
+            authors = (await pubs.Authors.OrderBy(a => a.AuthorId).Take(count).ToListAsync()).AsQueryable();
+        }
+    }
+    finally
+    {
+        isProcessing = false; // 処理中フラグを下ろす
+    }
+}

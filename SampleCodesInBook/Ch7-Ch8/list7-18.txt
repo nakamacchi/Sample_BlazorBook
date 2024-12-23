@@ -1,0 +1,13 @@
+<h3>Sample06 : スタイリング</h3>
+@if (authors == null)
+{
+    <div>データロード中...</div>
+}
+else
+{
+    <div>
+        <QuickGrid Items="@authors" Pagination="@paginationState">
+        ・・・中略・・・
+        </QuickGrid>
+    </div>
+}

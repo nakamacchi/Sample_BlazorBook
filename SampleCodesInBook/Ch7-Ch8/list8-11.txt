@@ -1,0 +1,9 @@
+[Parameter]
+public string? AuthorId { get; set; }
+
+protected override void OnParametersSet()
+{
+    if (String.IsNullOrEmpty(AuthorId)) throw new ArgumentNullException("AuthorId");
+    if (System.Text.RegularExpressions.Regex.IsMatch(AuthorId, @"^\d{3}-\d{2}-\d{4}$") == false) 
+	throw new ArgumentException("AuthorId");
+}

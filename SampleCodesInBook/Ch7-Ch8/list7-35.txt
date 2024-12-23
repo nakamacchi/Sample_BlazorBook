@@ -1,0 +1,25 @@
+@using BlazorApp1.Data
+@using Microsoft.AspNetCore.Components.QuickGrid
+
+@if (this.Authors == null)
+{
+    <div>データロード中...</div>
+}
+else
+{
+    <div>
+        <QuickGrid Items="@Authors" Pagination="@paginationState">
+       ・・・中略・・・
+        </QuickGrid>
+        <Paginator Value="@paginationState" />
+    </div>
+}
+
+@code {
+    [Parameter]
+    public IQueryable<Author>? Authors { get; set; }
+    private readonly PaginationState paginationState = new() { ItemsPerPage = 10 };
+
+    // Authors プロパティは外部で初期化するので、ここには初期化メソッドを記載しない
+}
+

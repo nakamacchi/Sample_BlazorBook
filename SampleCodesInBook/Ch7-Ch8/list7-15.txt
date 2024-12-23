@@ -1,0 +1,20 @@
+@code {
+    private List<string?> states = new();
+    
+    private IQueryable<Author>? authors = null;
+    private readonly PaginationState paginationState = new() { ItemsPerPage = 10 };
+
+    public class ViewModel { public string SelectedState { get; set; } = "";  }
+    private ViewModel vm { get; } = new();
+
+    private IQueryable<Author>? FilteredAuthors
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(vm.SelectedState) == true) return authors;
+            return authors?.Where(a => a.State == vm.SelectedState);
+        }
+    }
+
+・・・以下略・・・
+}

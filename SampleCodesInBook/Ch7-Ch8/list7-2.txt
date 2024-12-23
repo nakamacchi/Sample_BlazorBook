@@ -1,0 +1,5 @@
+{
+  "ConnectionStrings": {
+    "PubsDbContext": "Server=tcp:xxxxxxxx.database.windows.net,1433;Initial Catalog=pubs;Persist Security Info=False;User ID=xxxxxxxx;Password=xxxxxxxx;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+  }
+}

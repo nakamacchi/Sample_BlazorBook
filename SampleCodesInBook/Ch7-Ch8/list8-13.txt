@@ -1,0 +1,25 @@
+[CustomValidation(typeof(EditViewModel), "ValidateFullName")]
+public class EditViewModel
+{
+    [Display(Name = "著者ID")]
+    public string AuthorId { get; set; } = string.Empty;
+
+    [Display(Name = "著者名（名）")]
+    [Required(ErrorMessage = "著者名（名）は必須入力です。")]
+    [RegularExpression(@“^[\u0020-\u007e]{1,20}$”, ErrorMessage = "…")]
+    public string AuthorFirstName { get; set; } = string.Empty;
+
+    [Display(Name = "著者名（姓）")]
+    [Required(ErrorMessage = "著者名（姓）は必須入力です。")]
+    [RegularExpression(@“^[\u0020-\u007e]{1,40}$”, ErrorMessage = "…")]
+    public string AuthorLastName { get; set; } = string.Empty;
+
+    [Display(Name = "電話番号")]
+    [Required(ErrorMessage = "電話番号は必須入力です。")]
+    [RegularExpression(@“^\d{3} \d{3}-\d{4}$”, ErrorMessage = "…")]
+    public string Phone { get; set; } = string.Empty;
+
+    // フォームレベルでの単体入力チェック項目に対するロジックなどを実装
+    public static ValidationResult ValidateFullName(EditViewModel vm, ValidationContext ctx)
+    { /* 後述 */ }
+}

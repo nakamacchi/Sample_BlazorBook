@@ -1,0 +1,13 @@
+[CustomValidation(typeof(EditViewModel), "ValidateFullName")]
+public class EditViewModel
+{
+    // …中略…
+
+    public static ValidationResult ValidateFullName(EditViewModel vm, ValidationContext ctx)
+    {
+        if (vm.AuthorFirstName == "Nobuyuki" && vm.AuthorLastName == "Akama")
+            return new ValidationResult("Nobuyuki Akama という名前は予約済みのため登録できません。", 
+                                         new List<string>() { "AuthorFirstName", "AuthorLastName" });
+        return ValidationResult.Success!;
+    }
+}

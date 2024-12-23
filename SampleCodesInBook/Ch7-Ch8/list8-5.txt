@@ -1,0 +1,10 @@
+<div>
+    @if (authors.Count() != 0)
+    {
+        <AuthorsGrid Authors="@authors"></AuthorsGrid>
+    }
+    else
+    {
+        <span>データがありません。</span>
+    }
+</div>

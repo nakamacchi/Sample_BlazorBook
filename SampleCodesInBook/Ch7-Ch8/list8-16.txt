@@ -1,0 +1,25 @@
+protected override async Task OnInitializedAsync()
+{
+    Author? editAuthor = null;
+
+    await using (var pubs = await DbFactory.CreateDbContextAsync())
+    {
+        var query = from a in pubs.Authors
+            where a.AuthorId == this.AuthorId
+            select a;
+        editAuthor = await query.FirstOrDefaultAsync();
+    }
+    if (editAuthor == null) throw new InvalidOperationException(this.AuthorId);
+
+    // View に引き渡すデータを準備する
+    vm = new EditViewModel()
+        {
+            AuthorId = editAuthor.AuthorId,
+            AuthorFirstName = editAuthor.AuthorFirstName,
+            AuthorLastName = editAuthor.AuthorLastName,
+            Phone = editAuthor.Phone
+        };
+
+    // データ更新時に再利用する(楽観同時実行制御処理用)
+    originalAuthor = editAuthor;
+}

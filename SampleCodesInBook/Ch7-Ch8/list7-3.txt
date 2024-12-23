@@ -1,0 +1,11 @@
+builder.Services.AddDbContextFactory<PubsDbContext>(opt => {
+    if (builder.Environment.IsDevelopment()) {
+        opt = opt.EnableSensitiveDataLogging().EnableDetailedErrors();
+    }
+    opt.UseSqlServer(
+        builder.Configuration.GetConnectionString("PubsDbContext"),
+        providerOptions =>
+        {
+            providerOptions.EnableRetryOnFailure();
+        });
+});

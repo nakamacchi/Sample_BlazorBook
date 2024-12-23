@@ -1,0 +1,22 @@
+@code {
+    private GridItemsProvider<Author>? ItemsProvider { get; set; }
+
+    private string? LogMessage { get; set; } // デバッグ用メッセージ
+
+    protected override void OnInitialized()
+    {
+        ItemsProvider = async request =>
+        {
+            // ここはデバッグ用のコード
+            LogMessage += "(" + request.StartIndex + " " + request.Count + ") ";
+            StateHasChanged();
+
+            // 指定された位置のデータを指定行だけ取得して返す
+            await using (var pubs = await DbFactory.CreateDbContextAsync()){
+                var data = await pubs.Authors.Skip(request.StartIndex).Take(request.Count ?? 0).ToListAsync();
+                var totalCount = await pubs.Authors.CountAsync();
+                return GridItemsProviderResult.From(data, totalCount);
+            }
+        };
+    }
+}

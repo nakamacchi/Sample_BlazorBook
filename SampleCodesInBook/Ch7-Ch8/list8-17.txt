@@ -1,0 +1,37 @@
+private async Task OnEditFormSubmitted()
+{
+    if (isProcessing) return; // 処理中の場合はなにもせず復帰
+    isProcessing = true;   // 処理中フラグを立てる
+    cannotCancel = true; // 処理中はキャンセル不可にする
+
+    // データベースに登録を試みる
+    await using (PubsDbContext pubs = await DbFactory.CreateDbContextAsync()){
+
+        // データベースから最初に読みだしたときのデータをベースにする
+        Author target = originalAuthor!;
+
+        // 更新データで書き換える
+        target.AuthorFirstName = vm.AuthorFirstName;
+        target.AuthorLastName = vm.AuthorLastName;
+        target.Phone = vm.Phone;
+        pubs.Entry<Author>(target).State = EntityState.Modified;
+
+        try
+        {
+            // 同時実行制御（Timestamp 列で制御）
+            await pubs.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            concurrentUpdateErrorMessage = 
+                 "他のユーザがすでに当該データを更新しています。一度キャンセルして最初からやり直してください。";
+            cannotCancel = false; // キャンセル可能にフラグを戻す
+            return;
+        }
+    }
+
+    // isProcessing = false; ここではフラグを下ろさずにページ遷移する
+
+    // 正常に登録できた場合には、一覧画面に帰る
+    NavigationManager.NavigateTo("Sample11");
+}

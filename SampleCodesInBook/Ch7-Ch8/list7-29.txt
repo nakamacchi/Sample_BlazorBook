@@ -1,0 +1,9 @@
+@page "/Sample08b/{AuthorId}"
+@using BlazorApp1.Data
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+
+@* アプリケーションサービス *@
+@inject IDbContextFactory<PubsDbContext> DbFactory
+@inject NavigationManager NavigationManager
+

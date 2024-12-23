@@ -1,0 +1,3 @@
+private string? Message { get; set; };
+private Author? AuthorToDisplay { get; set; };
+private IQueryable<Title>? Titles { get; set; };

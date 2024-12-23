@@ -1,0 +1,19 @@
+@code {
+    [Parameter]
+    public string? AuthorId { get; set; }
+    protected override void OnParametersSet(){ /* …後述… */ }
+
+    private string concurrentUpdateErrorMessage = "";// エラーメッセージ領域
+    private EditViewModel vm = new EditViewModel();  // 検証ロジックで使用
+    private bool isProcessing = false;               // 多重サブミット防止用
+    private bool cannotCancel = false;               // キャンセル用
+    private Author? originalAuthor;                  // 楽観同時実行制御用
+
+    protected override async Task OnInitializedAsync(){ /* …後述… */ } 
+    
+    private void OnCancelButtonClicked(){ /* …後述… */ }
+    
+    private async Task OnEditFormSubmitted(){ /* …後述… */ }
+    
+    public class EditViewModel { /* …後述… */ }
+}

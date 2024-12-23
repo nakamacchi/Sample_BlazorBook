@@ -1,0 +1,4 @@
+private void OnCancelButtonClicked()
+{
+    if(!cannotCancel) NavigationManager.NavigateTo("Sample11");
+}

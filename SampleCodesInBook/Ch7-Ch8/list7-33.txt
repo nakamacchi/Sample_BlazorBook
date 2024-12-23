@@ -1,0 +1,17 @@
+protected override async Task OnInitializedAsync()
+{
+    await using (var pubs = await DbFactory.CreateDbContextAsync()){
+        Titles = (await pubs.Titles.Where(t => t.TitleAuthors
+            .Where(ta => ta.AuthorId == this.AuthorId).Count() > 0)
+            .Include(t => t.Publisher)
+            .ToListAsync()).AsQueryable();
+
+        AuthorToDisplay = await pubs.Authors
+            .Include(a => a.TitleAuthors)
+            .FirstOrDefaultAsync(a => a.AuthorId == this.AuthorId);
+    }
+
+    Message = AuthorToDisplay is null ?
+        null :
+        $"{AuthorToDisplay.AuthorFirstName} {AuthorToDisplay.AuthorLastName} さんの情報は以下の通りです。";
+}

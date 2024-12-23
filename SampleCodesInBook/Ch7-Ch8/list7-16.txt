@@ -1,0 +1,11 @@
+@code {
+・・・省略・・・
+
+    protected override async Task OnInitializedAsync()
+    {
+        await using (var pubs = await DbFactory.CreateDbContextAsync()) {
+            authors = (await pubs.Authors.ToListAsync()).AsQueryable();
+            states = await pubs.Authors.Select(a => a.State).Distinct().ToListAsync();
+        }
+    }
+}

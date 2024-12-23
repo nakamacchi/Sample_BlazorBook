@@ -1,0 +1,9 @@
+<div class="grid" tabindex="-1">
+  <QuickGrid ItemsProvider="@ItemsProvider" Virtualize="true" ItemSize="5">
+
+
+
+
+     ・・・中略・・・
+  </QuickGrid>
+</div>

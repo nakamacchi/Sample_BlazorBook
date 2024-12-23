@@ -1,0 +1,3 @@
+@* アプリケーションサービス *@
+@inject IDbContextFactory<PubsDbContext> DbFactory
+@inject NavigationManager NavigationManager

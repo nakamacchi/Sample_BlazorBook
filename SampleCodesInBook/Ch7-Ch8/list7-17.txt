@@ -1,0 +1,13 @@
+<EditForm Model="@vm">
+
+    <InputSelect @bind-Value="vm.SelectedState">
+        @foreach (var state in states)
+        {
+            <option>@state</option>
+        }
+   </InputSelect>
+</EditForm>
+
+<QuickGrid Items="@FilteredAuthors" Pagination="@paginationState">
+ ・・・中略・・・
+</QuickGrid>

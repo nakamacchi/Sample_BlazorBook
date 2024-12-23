@@ -1,0 +1,8 @@
+@code {
+    private IQueryable<Author> authors = new List<Author>().AsQueryable();
+    private ViewModel vm { get; } = new();
+    private bool isProcessing = false;	 // 処理中かどうかを判定するフラグ
+
+    private async Task OnEditFormSubmitted(){ /* …後述… */ }
+    public class ViewModel { /* …後述… */ }
+}
