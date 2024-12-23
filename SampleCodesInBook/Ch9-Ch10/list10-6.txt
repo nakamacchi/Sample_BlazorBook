@@ -1,0 +1,10 @@
+var builder = WebAssemblyHostBuilder.CreateDefault(args);
+builder.RootComponents.Add<App>("#app");
+builder.RootComponents.Add<HeadOutlet>("head::after");
+
+var stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("BlazorApp1.appsettings.json");
+builder.Configuration.AddJsonStream(stream);
+
+builder.Services.AddScoped<HttpClient>(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+await builder.Build().RunAsync();

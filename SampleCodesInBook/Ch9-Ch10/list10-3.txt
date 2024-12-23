@@ -1,0 +1,41 @@
+@page "/counter"
+
+@inject IJSRuntime jSRuntime
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+@if (currentCount.HasValue)
+{
+    <p role="status">Current count: @currentCount</p>
+    <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+}
+else
+{
+    <p>データを取得中です...</p>
+}
+
+@code {
+    private int? currentCount = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        string result = await jSRuntime.InvokeAsync<string>("localStorage.getItem", "currentCount");
+        int intValue;
+        if (int.TryParse(result, out intValue) == true)
+        {
+            currentCount = intValue;
+        }
+        else
+        {
+            currentCount = 0;
+        }
+    }
+
+    private async Task IncrementCount()
+    {
+        currentCount++;
+        await jSRuntime.InvokeVoidAsync("localStorage.setItem", "currentCount", currentCount.ToString());
+    }
+}

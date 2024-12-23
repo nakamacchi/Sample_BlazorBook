@@ -1,0 +1,43 @@
+string? baseAddress = builder.Configuration.GetValue<string>("BaseUrl");
+if (baseAddress == null) baseAddress = builder.HostEnvironment.BaseAddress;
+
+// 名前付きの HttpClient を定義する
+builder.Services.AddHttpClient("HttpClientWithRetry", client => client.BaseAddress = new Uri(baseAddress))
+    .AddPolicyHandler(msg =>
+    {
+        return HttpPolicyExtensions
+            .HandleTransientHttpError() // 408, 5xx エラー
+            .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound) // 404 エラー
+            .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.Unauthorized) // 401 エラー
+            .WaitAndRetryAsync(6, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)) 
+			+ TimeSpan.FromMilliseconds(Random.Shared.Next(0, 100)),
+                onRetry: (response, delay, retryCount, context) =>
+                {
+                    Console.WriteLine($"Retrying: StatusCode: {response.Result.StatusCode} Message: 
+			{response.Result.ReasonPhrase} RequestUri: {msg.RequestUri}");
+                });
+    });
+
+// 既定の HttpClient の挙動を変更する
+builder.Services.Configure<Microsoft.Extensions.Http.HttpClientFactoryOptions>(options =>
+{
+    options.HttpClientActions.Add(client =>
+    {
+        client.BaseAddress = new Uri(baseAddress);
+    });
+});
+
+
+
+
+
+@inject IHttpClientFactory httpClientFactory
+
+@code {
+    protected async Task GetData()
+    {
+        var httpClient1 = httpClientFactory.CreateClient();
+        var httpClient2 = httpClientFactory.CreateClient("HttpClientWithRetry");
+        ...
+    }
+}

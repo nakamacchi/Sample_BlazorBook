@@ -1,0 +1,20 @@
+// ログのカテゴリ名としてクラス名を利用するため、<T> で自身のクラスを指定する
+@inject ILogger<Counter> logger
+
+private static int currentCount = 0;
+
+private void IncrementCount()
+{
+    currentCount++;
+
+    // using Microsoft.Extensions.Logging の拡張メソッドを利用
+    logger.LogWarning("currentCount = {0}", currentCount); 
+
+    // 重大度に応じたメソッドの使い分け
+    logger.LogTrace("LogTrace");                // 0
+    logger.LogDebug("LogDebug");                // 1
+    logger.LogInformation("LogInformation");    // 2
+    logger.LogWarning("LogWarning");            // 3
+    logger.LogError("LogError");                // 4
+    logger.LogCritical("LogCritical");          // 5
+}

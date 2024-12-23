@@ -1,0 +1,58 @@
+public class Session
+{
+    public static int CurrentCount { get; set; } = 0;
+}
+
+
+
+
+@page "/counter"
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+@inject NavigationManager nav
+
+<p role="status">Current count: @Session.CurrentCount</p>
+<button class="btn btn-primary" @onclick="IncrementCount">増やす</button>
+<button class="btn btn-primary" @onclick="MoveToNextPage">次のページへ</button>
+
+@code {
+    private void IncrementCount()
+    {
+        Session.CurrentCount++;
+    }
+
+    private void MoveToNextPage()
+    {
+        nav.NavigateTo("/Counter2");
+    }
+}
+
+
+
+
+@page "/counter2"
+
+<PageTitle>Counter2</PageTitle>
+
+<h1>Counter2</h1>
+
+@inject NavigationManager nav
+
+<p role="status">Current count: @Session.CurrentCount</p>
+<button class="btn btn-info" @onclick="DecrementCount">減らす</button>
+<button class="btn btn-info" @onclick="BackToPreviousPage">前のページへ</button>
+
+@code {
+    private void DecrementCount()
+    {
+        Session.CurrentCount--;
+    }
+
+    private void BackToPreviousPage()
+    {
+        nav.NavigateTo("/Counter");
+    }
+}

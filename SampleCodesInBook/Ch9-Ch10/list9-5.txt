@@ -1,0 +1,30 @@
+using Microsoft.AspNetCore.Components.QuickGrid
+@inject HttpClient httpClient
+
+@if (authors == null) {
+    <p>データを取得中です。。。</p>
+} else {
+    <div class="table-responsive">
+        <QuickGrid Items="@authors.AsQueryable()">
+            <PropertyColumn Property="@(a => a.AuthorId)" Title="著者ID" Sortable="true" />
+            <TemplateColumn Title="著者名" Sortable="true" SortBy="@(GridSort<Author>.ByAscending(a => a.AuthorFirstName).ThenAscending(a => a.AuthorLastName))">
+                @(context.AuthorFirstName + " " + context.AuthorLastName)
+            </TemplateColumn>
+            <PropertyColumn Property="@(a => a.Phone)" Title="電話番号" Sortable="true" />
+            <PropertyColumn Property="@(a => a.State)" Title="州" Sortable="true" />
+            <TemplateColumn Title="契約有無" Sortable="true" SortBy="@(GridSort<Author>.ByAscending(a => a.Contract))">
+                <input type="checkbox" disabled checked="@(context.Contract)" />
+                @(context.Contract ? "契約あり" : "契約なし")
+            </TemplateColumn>
+        </QuickGrid>
+    </div>
+}
+
+@code
+{
+    List<Author>? authors = null;
+    protected override async Task OnInitializedAsync() {
+        var client = new WebApplication1_PubsClient("https://localhost:7067", httpClient);
+        authors = (await client.AuthorsAsync()).ToList();
+    }
+}

@@ -1,0 +1,22 @@
+var builder = WebAssemblyHostBuilder.CreateDefault(args);
+builder.RootComponents.Add<App>("#app");
+builder.RootComponents.Add<HeadOutlet>("head::after");
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+await builder.Build().RunAsync();
+
+
+
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+@inject ILogger<ページ名> logger
+※ またはコードブロックに以下を記述
+@code
+{
+    [Inject]
+    public HttpClient httpClient { get; set; }
+    [Inject]
+    public NavigationManager navigataionManager { get; set; }
+    [Inject]
+    public ILogger<ページ名> logger { get; set; }
+}
+

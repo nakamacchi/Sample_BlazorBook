@@ -1,0 +1,45 @@
+using Microsoft.EntityFrameworkCore;
+using WebApplication1.Data;
+
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContextFactory<PubsDbContext>(opt =>
+{
+    if (builder.Environment.IsDevelopment())
+    {
+        opt = opt.EnableSensitiveDataLogging().EnableDetailedErrors();
+    }
+    opt.UseSqlServer(
+        builder.Configuration.GetConnectionString("PubsDbContext"),
+        providerOptions =>
+        {
+            providerOptions.EnableRetryOnFailure();
+        });
+});
+
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("https://localhost:7227")　// テストであれば .AllowAnyOrigin()
+                          .AllowAnyHeader().AllowAnyMethod(); // これをしておかないと GET の CORS しか通らない
+                      });
+});
+
+var app = builder.Build();
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+app.UseCors(MyAllowSpecificOrigins);
+
+app.UseHttpsRedirection();
+app.UseAuthorization();
+app.MapControllers();
+app.Run();
