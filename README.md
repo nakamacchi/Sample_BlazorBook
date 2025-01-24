@@ -62,7 +62,11 @@
   - @attribute [RenderModeInteractiveServer(true/false)]
   - @attribute [RenderModeInteractiveWebAssembly(true/false)]
   - @attribute [RenderModeInteractiveAuto(true/false)]
-- 一方、図11.7 に記載している通り、@rendermode を用いた指定方法の場合、既定では、サーバ側プリレンダリングを無効化するレンダリングモードの選択肢が用意されていません。このため、プリレンダリングを無効にしたレンダリングモードを利用したい場合には、ご自身のソリューションファイルに p.295 リスト 11.8 に記載されているモード指定クラスを追加していただき、これを利用するようにしてください。
+- 代わりに以下のような記述を行うことで、プリレンダリングを無効化した各レンダリングモードを利用することができます。
+  - @rendermode @(new InteractiveServerRenderMode(prerender: false));
+  - @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false));
+  - @rendermode @(new InteractiveAutoRenderMode(prerender: false));
+- が、かなり面倒な記述になるため、プリレンダリングを無効にしたレンダリングモードを利用したい場合には、ご自身のソリューションファイルに p.295 リスト 11.8 に記載されているモード指定クラスを追加していただき、これを利用するようにしてください。
 
 ### p.89 表5.1 4 行目 HttpClient について
 
