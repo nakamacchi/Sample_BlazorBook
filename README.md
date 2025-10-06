@@ -219,6 +219,20 @@ p.203 の解説では「OnParametersSet()メソッドの処理後、OnInitialize
 
 - https://learn.microsoft.com/ja-jp/aspnet/core/blazor/components/lifecycle?view=aspnetcore-8.0#after-parameters-are-set-onparameterssetasync
 
+## ご参考
+
+### p.321 SQL Server のコマンドラインからのインストールについて
+
+SQL Server の管理者（sa）パスワードを /SAPWD パラメータにより与えていますが、このパスワードには[複雑性に関する要件](https://learn.microsoft.com/ja-jp/sql/relational-databases/security/password-policy)があります。以下の要件を満たす文字列を指定してください。（要件を満たさないパスワードを指定した場合でもインストールエラーが発生せず、接続時に弾かれる形になります。ご注意ください。）
+
+- パスワードにユーザーのアカウント名が含まれていません。
+- パスワードは 8 文字以上である。
+- パスワードは次の 4 つのカテゴリのうちの 3 つのカテゴリの文字を含みます:
+  - ラテン文字の大文字 (A ～ Z)
+  - ラテン文字の小文字 (a ～ z)
+  - 10進数（0～9）
+  - 感嘆符 (!)、ドル記号 ($)、番号記号 (#)、パーセント記号 (%) などの英数字以外の文字。
+
 ## その他
 
 本書ではクラウドサービスに関しては深く記載しておりませんが、以下のサイトでマイクロソフトのメンバーが整理した様々な技術資料をご参照いただけます。アプリケーションをクラウド上で運用する際に参考にしてください。
